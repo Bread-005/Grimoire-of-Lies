@@ -1,20 +1,20 @@
+import {startGame} from "./roleSelection.js";
+
 document.addEventListener("DOMContentLoaded", () => {
     const playerCountInput = document.getElementById("player-count-input");
-
-    createGrimoire();
 
     if (!localStorage.getItem("player-count")) {
         localStorage.setItem("player-count", "8");
     }
-    playerCountInput.value = localStorage.getItem("player-count");
+    if (!localStorage.getItem("game-is-running")) {
+        localStorage.setItem("game-is-running", "false");
+    }
 
-    playerCountInput.addEventListener("input", () => {
-        if (playerCountInput.value > 12) {
-            playerCountInput.value = 12;
-        }
-        localStorage.setItem("player-count", playerCountInput.value);
-        createGrimoire();
-    });
+    localStorage.setItem("game-is-running", "false");
+
+    createGrimoire();
+    setupPlayerCountSelection();
+    document.getElementById("start-game-button").addEventListener("click", startGame);
 
 
     function createGrimoire() {
@@ -38,8 +38,30 @@ document.addEventListener("DOMContentLoaded", () => {
             circle.classList.add("player-circle");
             circle.style.left = x + "px";
             circle.style.top = y + "px";
+            circle.style.display = "flex";
+            circle.style.justifyContent = "center";
+            circle.style.alignItems = "center";
 
+            const img = document.createElement("img");
+            img.src = "https://i.postimg.cc/qM09f8cD/placeholder-icon.png";
+            img.style.height = "80px";
+            img.style.width = "80px";
+            img.id = "player-role-image" + i;
+
+            circle.append(img);
             grimoire.append(circle);
         }
+    }
+
+    function setupPlayerCountSelection() {
+        playerCountInput.value = localStorage.getItem("player-count");
+
+        playerCountInput.addEventListener("input", () => {
+            if (playerCountInput.value > 12) {
+                playerCountInput.value = 12;
+            }
+            localStorage.setItem("player-count", playerCountInput.value);
+            createGrimoire();
+        });
     }
 });

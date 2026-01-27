@@ -5,12 +5,58 @@ body {
     background: gray;
 }
 
+button:hover {
+    background: lightblue;
+    cursor: pointer;
+}
+
 .main-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin: 10px;
+
+    .settings {
+        position: fixed;
+        background-color: darkgray;
+        height: 70vh;
+        width: 15vw;
+        top: 20%;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+
+        .config {
+            background-color: orange;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            input {
+                height: 20px;
+            }
+        }
+
+        .role-list {
+            background-color: lightblue;
+            margin: 20px 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            scale: 1.2;
+            background: lightgreen;
+        }
+    }
 
     #grimoire {
         position: relative;

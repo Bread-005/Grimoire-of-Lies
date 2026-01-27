@@ -1,0 +1,31 @@
+body {
+    font-family: Kokonor, sans-serif;
+    min-width: 90vw;
+    padding: 10px;
+    background: gray;
+}
+
+.main-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+
+    #grimoire {
+        position: relative;
+        width: 600px;
+        height: 600px;
+        background: #222;
+        border-radius: 50%;
+
+        .player-circle {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: crimson;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+}

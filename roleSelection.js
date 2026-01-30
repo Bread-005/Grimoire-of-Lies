@@ -1,3 +1,21 @@
+import {alivePlayers, isDrunk, isGameRunning, isGood, night, playerCount, roleIsSoberAlive} from "./src/shortcuts.js";
+import {chefInfo} from "./src/roles/Trouble Brewing/chef.js";
+import {stewardInfo} from "./src/roles/steward.js";
+import {empathInfo} from "./src/roles/Trouble Brewing/empath.js";
+import {addToChambermaidList, chambermaidInfo} from "./src/roles/Bad Moon Rising/chambermaid.js";
+import {mayorRedirect} from "./src/roles/Trouble Brewing/mayor.js";
+import {isMonkProtected} from "./src/roles/Trouble Brewing/monk.js";
+import {isTeaLadyProtected} from "./src/roles/Bad Moon Rising/tea_lady.js";
+import {washerwomanInfo} from "./src/roles/Trouble Brewing/washerwoman.js";
+import {librarianInfo} from "./src/roles/Trouble Brewing/librarian.js";
+import {investigatorInfo} from "./src/roles/Trouble Brewing/investigator.js";
+import {knightInfo} from "./src/roles/knight.js";
+import {grandmotherInfo} from "./src/roles/Bad Moon Rising/grandmother.js";
+import {fortuneTellerInfo} from "./src/roles/Trouble Brewing/fortune_teller.js";
+import {butlerInfo} from "./src/roles/Trouble Brewing/butler.js";
+import {undertakerInfo} from "./src/roles/Trouble Brewing/undertaker.js";
+import {assignNewImp} from "./src/roles/Trouble Brewing/imp.js";
+
 const characterTypeDistribution = [
     [0,0,0,0], [0,0,0,1], [1,0,0,1], [2,0,0,1], [2,1,0,1],
     [3,0,1,1], [3,1,1,1],
@@ -19,15 +37,13 @@ const evilRoles = minionRoles.concat(demonRoles);
 const allRoles = goodRoles.concat(evilRoles);
 
 function startGame() {
-    if (localStorage.getItem("game-is-running") === "true") return;
+    if (isGameRunning()) return;
 
-    const playerCount = Number(localStorage.getItem("player-count"));
-
-    if (townsfolkRoles.length < playerCount) {
+    if (townsfolkRoles.length < playerCount()) {
         console.log("You need to activate more Townsfolk roles");
         return;
     }
-    if (playerCount > characterTypeDistribution.length) {
+    if (playerCount() > characterTypeDistribution.length) {
         console.log("You selected too many players");
         return;
     }
@@ -37,7 +53,10 @@ function startGame() {
 
     players.length = 0;
 
-    for (let i = 0; i < playerCount; i++) {
+    document.getElementById("start-game-button").style.display = "none";
+    document.getElementById("player-count-input").style.display = "none";
+
+    for (let i = 0; i < playerCount(); i++) {
         players.push({
             name: "Player " + i,
             seat: i,
@@ -106,15 +125,36 @@ function startGame() {
     }
 
     players.sort((a,b) => a.seat - b.seat);
-    console.log(players.map(player => player.name + ": " + player.role.name + (player.role.name === player.bluff ? "" : " - " + player.bluff)));
 
+    startNight();
+}
+
+function startNight() {
+
+    nightDeaths();
+    giveInformation();
+}
+
+function giveInformation() {
+    for (const player of alivePlayers()) {
+        washerwomanInfo(player);
+        librarianInfo(player);
+        investigatorInfo(player);
+        chefInfo(player);
+        stewardInfo(player);
+        knightInfo(player);
+        grandmotherInfo(player);
+        empathInfo(player);
+        fortuneTellerInfo(player);
+        butlerInfo(player);
+        undertakerInfo(player);
+    }
+    chambermaidInfo();
     showClaims();
 }
 
 function showClaims() {
     for (const player of players) {
-        document.getElementById("player-role-image" + player.seat).src =
-            "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.bluff.toLowerCase().replaceAll(" ", "") + ".png";
         const roleImage = document.getElementById("player-role-image" + player.seat);
         roleImage.style.height = "80px";
         roleImage.style.width = "80px";
@@ -127,7 +167,172 @@ function showClaims() {
         playerInfo.textContent = player.info;
     }
 }
+
+function nightDeaths() {
+    if (night() === 1) return;
+
+    for (const player of players) {
+        if (player.role.characterType !== "Demon") continue;
+        if (!player.isAlive && player.role.name !== "Zombuul") continue;
+        if (player.role.name === "Pukka") continue;
+        if (player.role.name === "Zombuul" && player.diedToday) continue;
+        if (player.isExorcistChosen) {
+            delete player.isExorcistChosen;
+            continue;
+        }
+
+        addToChambermaidList(player);
+
+        if (player.wasStarPassedTo) {
+            delete player.wasStarPassedTo;
+            continue;
+        }
+        if (isDrunk(player)) continue;
+
+        if (player.role.name === "Shabaloth" && player.killTarget && player.killTarget2 && Math.random() < 0.33) {
+            const revivedPlayer = Math.random() - 0.5 > 0.5 ? player.killTarget : player.killTarget2;
+            revivedPlayer.isAlive = true;
+            player.evilTarget = revivedPlayer;
+        }
+
+        let alivePlayers = players.filter(p => p.isAlive || p.role.name === "Zombuul" && p.lifes > 0).sort(() => Math.random() - 0.5);
+        const aliveEvilsCount = alivePlayers.filter(p => !p.isGood).length;
+        if (aliveEvilsCount === 1) alivePlayers = alivePlayers.filter(p => p.isGood);
+        if (player.role.name === "Vortox" || player.role.name === "Zombuul" && player.lifes === 1 || player.role.name === "Shabaloth") alivePlayers = alivePlayers.filter(p => p.name !== player.name);
+        if (player.role.name === "Imp") alivePlayers = alivePlayers.filter(p => p.role.characterType !== "Minion");
+
+        player.killTarget = mayorRedirect(alivePlayers[0], player);
+        dies(player.killTarget, "night", player);
+
+        if (player.role.name === "Shabaloth" && alivePlayers.length >= 2) {
+            player.killTarget2 = mayorRedirect(alivePlayers[1], player);
+            dies(player.killTarget2, "night", player);
+        }
+    }
+
+    assassinKill();
+    godfatherKill();
+
+    for (const player of players) {
+        if (player.role.name === "Moonchild" && !isDrunk(player) && !player.isAlive && player.target && player.target.isGood) {
+            dies(player.target, "night", player);
+            delete player.target;
+        }
     }
 }
 
-export {startGame};
+function dies(player, phase, attacker = undefined, isExecution = false) {
+
+    if (isDrunk(attacker)) return;
+
+    if (player.role?.name !== "Zombuul") {
+        if (!player.isAlive) return;
+    }
+
+    if (attacker?.role.characterType === "Demon") {
+        if (player.role.name === "Soldier" && !isDrunk(player)) {
+            return;
+        }
+        if (isMonkProtected(player, attacker)) return;
+    }
+
+    if (isTeaLadyProtected(player) && attacker?.role.name !== "Assassin") return;
+
+    if (phase === "day" && isExecution) {
+        // Devil´s Advocate protection
+        for (const player1 of alivePlayers()) {
+            if (player1.role.name === "Devils Advocate" && !isDrunk(player1) && player1.evilTarget.name === player.name) {
+                return;
+            }
+        }
+
+        // Pacifist protection
+        if (roleIsSoberAlive("Pacifist") && Math.random() < 0.33 && isGood(player)) {
+            return;
+        }
+
+        // Sailor protection
+        for (const player1 of alivePlayers()) {
+            if (player1.role.name === "Sailor" && !isDrunk(player1) && player.name === player1.name) {
+                return;
+            }
+        }
+
+        moonChildPick();
+    }
+
+    player.isAlive = false;
+
+    // Grandmother death
+    if (attacker?.role.characterType === "Demon") {
+        for (const player1 of alivePlayers()) {
+            if (player1.role.name === "Grandmother" && !isDrunk(player1) && player.name === player1?.target?.name) {
+                dies(player1, phase, player1);
+            }
+        }
+    }
+
+    if (phase === "night" && player.role.name === "Imp" && attacker?.name === player.name) {
+        assignNewImp(player);
+    }
+
+    if (player.role.characterType === "Demon" && attacker?.name !== player.name) {
+        if (alivePlayers().length >= 4) {
+            for (const player1 of alivePlayers()) {
+                if (player1.role.name === "Scarlet Woman" && !isDrunk(player1)) {
+                    player1.startingRole = "Scarlet Woman";
+                    player1.role.name = player.role.name;
+                    player1.role.characterType = "Demon";
+                    if (player1.role.name === "Zombuul") player1.lifes = 2;
+                }
+            }
+        }
+    }
+
+    if (player.role.name === "Zombuul") {
+        player.lifes--;
+    }
+
+    // check win conditions
+
+    if (alivePlayers().length <= 2 && alivePlayers().filter(p => p.role.characterType === "Demon").length > 0) {
+        gameEndMessage = "Es leben nur noch 2 Spieler";
+        winningTeam = "Evil";
+    }
+    if (!alivePlayers().find(p => p.role.characterType === "Demon")) {
+        gameEndMessage = "Der Demon lebt nicht mehr";
+        winningTeam = "Good";
+        for (const player1 of players) {
+            if (player1.role.name === "Zombuul" && player1.lifes > 0 && !isDrunk(player1)) {
+                gameEndMessage = "";
+                winningTeam = "";
+            }
+        }
+    }
+    if (phase === "night") {
+        ravenkeeperInfo(player);
+        if (player.role.name === "Poisoner") {
+            player.drunkTarget.drunkSources = player.drunkTarget.drunkSources.filter(role => role !== "Poisoner");
+        }
+        if (player.role.name === "Sailor") {
+            player.drunkTarget.drunkSources = player.drunkTarget.drunkSources.filter(role => role !== "Sailor");
+        }
+    }
+    if (phase === "day") {
+        for (const player1 of players) {
+            if (player1.role.name === "Zombuul") {
+                player1.diedToday = true;
+            }
+        }
+        if (player.role.characterType === "Outsider") {
+            for (const player1 of players) {
+                if (player1.role.name === "Godfather") {
+                    player1.outsiderDiedToday = true;
+                }
+            }
+        }
+    }
+    gameEnds();
+}
+
+export {players, startGame};

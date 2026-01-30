@@ -62,6 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
         playerCountInput.value = localStorage.getItem("player-count");
 
         playerCountInput.addEventListener("input", () => {
+            if (playerCountInput.value < 3) {
+                playerCountInput.value = 3;
+            }
             if (playerCountInput.value > 12) {
                 playerCountInput.value = 12;
             }

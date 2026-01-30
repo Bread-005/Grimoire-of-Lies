@@ -115,6 +115,18 @@ function showClaims() {
     for (const player of players) {
         document.getElementById("player-role-image" + player.seat).src =
             "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.bluff.toLowerCase().replaceAll(" ", "") + ".png";
+        const roleImage = document.getElementById("player-role-image" + player.seat);
+        roleImage.style.height = "80px";
+        roleImage.style.width = "80px";
+        roleImage.src = "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.bluff.toLowerCase().replaceAll(" ", "") + ".png";
+        roleImage.style.position = "relative";
+
+        const playerInfo = document.getElementById("player-info" + player.seat);
+        if (player.info) playerInfo.style.visibility = "visible";
+        else playerInfo.style.visibility = "hidden";
+        playerInfo.textContent = player.info;
+    }
+}
     }
 }
 

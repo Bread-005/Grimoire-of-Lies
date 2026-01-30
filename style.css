@@ -72,6 +72,22 @@ button:hover {
             background: crimson;
             border-radius: 50%;
             transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .player-name {
+                top: -40px;
+                position: absolute;
+                color: white;
+            }
+
+            .player-info {
+                position: absolute;
+                top: 85px;
+                color: white;
+                visibility: hidden;
+            }
         }
     }
 }

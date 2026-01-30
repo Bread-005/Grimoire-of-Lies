@@ -38,17 +38,22 @@ document.addEventListener("DOMContentLoaded", () => {
             circle.classList.add("player-circle");
             circle.style.left = x + "px";
             circle.style.top = y + "px";
-            circle.style.display = "flex";
-            circle.style.justifyContent = "center";
-            circle.style.alignItems = "center";
+
+            const playerName = document.createElement("p");
+            playerName.id = "player-name" + i;
+            playerName.textContent = "# " + i;
+            playerName.classList.add("player-name");
 
             const img = document.createElement("img");
-            img.src = "https://i.postimg.cc/qM09f8cD/placeholder-icon.png";
-            img.style.height = "80px";
-            img.style.width = "80px";
             img.id = "player-role-image" + i;
 
+            const playerInfo = document.createElement("p");
+            playerInfo.id = "player-info" + i;
+            playerInfo.classList.add("player-info");
+
+            circle.append(playerName);
             circle.append(img);
+            circle.append(playerInfo);
             grimoire.append(circle);
         }
     }

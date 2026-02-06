@@ -10,6 +10,15 @@ button:hover {
     cursor: pointer;
 }
 
+.popup {
+    position: fixed;
+    transform: translate(50%, 50%);
+    padding: 2px 5px;
+    color: black;
+    border-radius: 8px;
+    opacity: 0.75;
+}
+
 .main-page {
     display: flex;
     flex-direction: column;

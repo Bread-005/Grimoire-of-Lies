@@ -303,18 +303,12 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     // check win conditions
 
     if (alivePlayers().length <= 2 && alivePlayers().filter(p => p.role.characterType === "Demon").length > 0) {
-        gameEndMessage = "Es leben nur noch 2 Spieler";
-        winningTeam = "Evil";
+        endGame("Es leben nur noch 2 Spieler", "Evil");
+        return;
     }
-    if (!alivePlayers().find(p => p.role.characterType === "Demon")) {
-        gameEndMessage = "Der Demon lebt nicht mehr";
-        winningTeam = "Good";
-        for (const player1 of players) {
-            if (player1.role.name === "Zombuul" && player1.lifes > 0 && !isDrunk(player1)) {
-                gameEndMessage = "";
-                winningTeam = "";
-            }
-        }
+    if (!alivePlayers().find(p => p.role.characterType === "Demon") && !players.find(p => p.role.name === "Zombuul" && p.lifes > 0 && !isDrunk(p))) {
+        endGame("Der Demon lebt nicht mehr", "Good");
+        return;
     }
     if (phase === "night") {
         ravenkeeperInfo(player);
@@ -339,7 +333,6 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
             }
         }
     }
-    gameEnds();
 }
 
 function executePlayer(executed) {

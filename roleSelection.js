@@ -2,7 +2,7 @@ import {alivePlayers, isDrunk, isGameRunning, isGood, night, playerCount, roleIs
 import {chefInfo} from "./src/roles/Trouble Brewing/chef.js";
 import {stewardInfo} from "./src/roles/steward.js";
 import {empathInfo} from "./src/roles/Trouble Brewing/empath.js";
-import {addToChambermaidList, chambermaidInfo} from "./src/roles/Bad Moon Rising/chambermaid.js";
+import {addToChambermaidList, chambermaidInfo, chambermaidList} from "./src/roles/Bad Moon Rising/chambermaid.js";
 import {mayorRedirect} from "./src/roles/Trouble Brewing/mayor.js";
 import {isMonkProtected} from "./src/roles/Trouble Brewing/monk.js";
 import {isTeaLadyProtected} from "./src/roles/Bad Moon Rising/tea_lady.js";
@@ -15,7 +15,14 @@ import {fortuneTellerInfo} from "./src/roles/Trouble Brewing/fortune_teller.js";
 import {butlerInfo} from "./src/roles/Trouble Brewing/butler.js";
 import {undertakerInfo} from "./src/roles/Trouble Brewing/undertaker.js";
 import {assignNewImp} from "./src/roles/Trouble Brewing/imp.js";
+import {ravenkeeperInfo} from "./src/roles/Trouble Brewing/ravenkeeper.js";
+import {endGame} from "./shortcuts.js";
+import {minstrelCheck} from "./src/roles/Bad Moon Rising/minstrel.js";
+import {moonChildPick} from "./src/roles/Bad Moon Rising/moonchild.js";
+import {assassinKill} from "./src/roles/Bad Moon Rising/assassin.js";
+import {godfatherKill} from "./src/roles/Bad Moon Rising/godfather.js";
 
+const n = "\n";
 const characterTypeDistribution = [
     [0,0,0,0], [0,0,0,1], [1,0,0,1], [2,0,0,1], [2,1,0,1],
     [3,0,1,1], [3,1,1,1],
@@ -125,6 +132,7 @@ function startGame() {
     }
 
     players.sort((a,b) => a.seat - b.seat);
+    players.forEach(p => document.getElementById("execute-button" + p.seat).style.visibility = "visible");
 
     startNight();
 }
@@ -162,8 +170,7 @@ function showClaims() {
         roleImage.style.position = "relative";
 
         const playerInfo = document.getElementById("player-info" + player.seat);
-        if (player.info) playerInfo.style.visibility = "visible";
-        else playerInfo.style.visibility = "hidden";
+        playerInfo.style.visibility = player.info ? "visible" : "hidden";
         playerInfo.textContent = player.info;
     }
 }
@@ -335,4 +342,64 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     gameEnds();
 }
 
-export {players, startGame};
+function executePlayer(executed) {
+    for (const player of players) {
+        if (player.role.name === "Grandmother" || player.role.name === "Moonchild") continue;
+        delete player.target;
+        if (player.role.name === "Devils Advocate") continue;
+        delete player.evilTarget;
+        if (player.role.name === "Shabaloth") continue;
+        delete player.killTarget;
+        if (player.role.name === "Pukka") continue;
+        delete player.drunkTarget;
+    }
+
+    if (executed.isAlive || executed.role.name === "Zombuul") {
+        dies(executed, "day", undefined, true);
+        if (executed.role.name === "Saint" && !executed.isAlive && !isDrunk(executed)) {
+            endGame();
+            return;
+        }
+        minstrelCheck(executed);
+
+        if (!executed.isAlive && (executed.role.name !== "Zombuul" || executed.lifes > 0)) {
+            for (const player of players) {
+                if (player.bluff === "Undertaker") {
+                    player.target = executed;
+                }
+            }
+        }
+    }
+    if (!executed.isAlive) {
+        if (alivePlayers().length === 3 && roleIsSoberAlive("Mayor")) {
+            endGame("Mayor Win!", "Good");
+            return;
+        }
+    }
+
+    // sober up all players
+    for (const player of players) {
+        player.drunkSources = player.drunkSources.filter(role => role !== "Sailor" && role !== "Poisoner");
+        for (const player1 of alivePlayers()) {
+            if (player1.role.name === "Minstrel" && !player1.minstrelDay) {
+                player.drunkSources = player.drunkSources.filter(role => role !== "Minstrel");
+            }
+        }
+    }
+    for (const player of alivePlayers()) {
+        if (player.role.name === "Minstrel") {
+            delete player.minstrelDay;
+        }
+    }
+
+    chambermaidList.length = 0;
+
+    if (isGameRunning()) {
+        localStorage.setItem("night", (night() + 1).toString());
+        console.log(executed.name + " is executed and " + (executed.isAlive ? "survives" : "dies") + n + "Night" + night() + " begins");
+        // dusk
+        startNight();
+    }
+}
+
+export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies};

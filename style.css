@@ -88,6 +88,13 @@ button:hover {
                 color: white;
                 visibility: hidden;
             }
+
+            .execute-button {
+                position: absolute;
+                top: 130px;
+                padding: 5px;
+                visibility: hidden;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-import {startGame} from "./roleSelection.js";
+import {executePlayer, players, startGame} from "./roleSelection.js";
+import {isGameRunning} from "./src/shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const playerCountInput = document.getElementById("player-count-input");
@@ -51,9 +52,16 @@ document.addEventListener("DOMContentLoaded", () => {
             playerInfo.id = "player-info" + i;
             playerInfo.classList.add("player-info");
 
+            const executeButton = document.createElement("button");
+            executeButton.id = "execute-button" + i;
+            executeButton.classList.add("execute-button");
+            executeButton.textContent = "execute";
+            executeButton.addEventListener("click", () => executePlayer(players[i]));
+
             circle.append(playerName);
             circle.append(img);
             circle.append(playerInfo);
+            circle.append(executeButton);
             grimoire.append(circle);
         }
     }
@@ -62,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         playerCountInput.value = localStorage.getItem("player-count");
 
         playerCountInput.addEventListener("input", () => {
+            if (isGameRunning()) return;
             if (playerCountInput.value < 3) {
                 playerCountInput.value = 3;
             }

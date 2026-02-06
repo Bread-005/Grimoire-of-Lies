@@ -34,9 +34,9 @@ const characterTypeDistribution = [
 ];
 const players = [];
 
-const townsfolkRoles = ["Steward", "Empath", "Chef"];
+const townsfolkRoles = ["Steward", "Empath", "Chef", "Washerwoman", "Investigator"];
 const outsiderRoles = [];
-const minionRoles = [];
+const minionRoles = ["Scarlet Woman"];
 const demonRoles = ["Imp"];
 
 const goodRoles = townsfolkRoles.concat(outsiderRoles);

@@ -47,11 +47,11 @@ function startGame() {
     if (isGameRunning()) return;
 
     if (townsfolkRoles.length < playerCount()) {
-        console.log("You need to activate more Townsfolk roles");
+        createPopup("You need to activate more Townsfolk roles", "40%", "50%", document.getElementById("grimoire"), 10000, "red");
         return;
     }
     if (playerCount() > characterTypeDistribution.length) {
-        console.log("You selected too many players");
+        createPopup("You selected too many players", "40%", "50%", document.getElementById("grimoire"), 10000, "red");
         return;
     }
 
@@ -309,11 +309,11 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     // check win conditions
 
     if (alivePlayers().length <= 2 && alivePlayers().filter(p => p.role.characterType === "Demon").length > 0) {
-        endGame("Es leben nur noch 2 Spieler", "Evil");
+        endGame("Only 2 players live", "Evil");
         return;
     }
     if (!alivePlayers().find(p => p.role.characterType === "Demon") && !players.find(p => p.role.name === "Zombuul" && p.lifes > 0 && !isDrunk(p))) {
-        endGame("Der Demon lebt nicht mehr", "Good");
+        endGame("There is no living Demon", "Good");
         return;
     }
     if (phase === "night") {

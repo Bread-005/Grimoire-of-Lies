@@ -1,3 +1,5 @@
+import {players} from "./roleSelection.js";
+
 let popupZIndex = 1000;
 
 function endGame(text = "", winningTeam = "") {
@@ -6,9 +8,16 @@ function endGame(text = "", winningTeam = "") {
     createPopup("The " + winningTeam + " Team has won", "49%");
     localStorage.setItem("game-is-running", "false");
     setTimeout(() => window.location.reload(), 11000);
+
+    for (const player of players) {
+        if (!player.isGood) {
+            document.getElementById("player-role-image" + player.seat).src =
+                "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.role.name.toLowerCase().replaceAll(" ", "") + ".png";
+        }
+    }
 }
 
-function createPopup(text, top = "20%", right = "50%", duration = 10000, backgroundColor = "lime") {
+function createPopup(text, top = "20%", right = "50%", parentElement = document.getElementById("grimoire"), duration = 10000, backgroundColor = "lime") {
     const popup = document.createElement("div");
     popup.classList.add("popup");
     popup.style.top = top;
@@ -19,10 +28,10 @@ function createPopup(text, top = "20%", right = "50%", duration = 10000, backgro
     const p = document.createElement("p");
     p.textContent = text;
     popup.append(p);
-    document.getElementById("grimoire").append(popup);
+    parentElement.append(popup);
 
     setTimeout(() => {
-        document.getElementById("grimoire").removeChild(popup);
+        parentElement.removeChild(popup);
         popupZIndex--;
     }, duration);
 }

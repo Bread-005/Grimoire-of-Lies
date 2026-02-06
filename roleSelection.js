@@ -132,7 +132,12 @@ function startGame() {
     }
 
     players.sort((a,b) => a.seat - b.seat);
-    players.forEach(p => document.getElementById("execute-button" + p.seat).style.visibility = "visible");
+
+    for (const player of players) {
+        const playerCircle = document.getElementById("player-circle" + player.seat);
+        playerCircle.style.cursor = "pointer";
+        playerCircle.addEventListener("click", () => executePlayer(player));
+    }
 
     startNight();
 }
@@ -269,6 +274,7 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     }
 
     player.isAlive = false;
+    document.getElementById("player-circle" + player.seat).style.background = "gray";
 
     // Grandmother death
     if (attacker?.role.characterType === "Demon") {
@@ -336,6 +342,8 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
 }
 
 function executePlayer(executed) {
+    if (!isGameRunning()) return;
+
     for (const player of players) {
         if (player.role.name === "Grandmother" || player.role.name === "Moonchild") continue;
         delete player.target;
@@ -395,4 +403,4 @@ function executePlayer(executed) {
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies};
+export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles};

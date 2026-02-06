@@ -1,4 +1,4 @@
-import {executePlayer, players, startGame} from "./roleSelection.js";
+import {startGame} from "./roleSelection.js";
 import {isGameRunning} from "./src/shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const y = centerY + radius * Math.sin(angle);
 
             const circle = document.createElement("div");
+            circle.id = "player-circle" + i;
             circle.classList.add("player-circle");
             circle.style.left = x + "px";
             circle.style.top = y + "px";
@@ -52,16 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
             playerInfo.id = "player-info" + i;
             playerInfo.classList.add("player-info");
 
-            const executeButton = document.createElement("button");
-            executeButton.id = "execute-button" + i;
-            executeButton.classList.add("execute-button");
-            executeButton.textContent = "execute";
-            executeButton.addEventListener("click", () => executePlayer(players[i]));
-
             circle.append(playerName);
             circle.append(img);
             circle.append(playerInfo);
-            circle.append(executeButton);
             grimoire.append(circle);
         }
     }

@@ -16,7 +16,7 @@ import {butlerInfo} from "./src/roles/Trouble Brewing/butler.js";
 import {undertakerInfo} from "./src/roles/Trouble Brewing/undertaker.js";
 import {assignNewImp} from "./src/roles/Trouble Brewing/imp.js";
 import {ravenkeeperInfo} from "./src/roles/Trouble Brewing/ravenkeeper.js";
-import {endGame} from "./shortcuts.js";
+import {addToLogs, createPopup, endGame} from "./shortcuts.js";
 import {minstrelCheck} from "./src/roles/Bad Moon Rising/minstrel.js";
 import {moonChildPick} from "./src/roles/Bad Moon Rising/moonchild.js";
 import {assassinKill} from "./src/roles/Bad Moon Rising/assassin.js";
@@ -143,7 +143,7 @@ function startGame() {
 }
 
 function startNight() {
-
+    addToLogs("Night" + night() + " begins");
     nightDeaths();
     giveInformation();
 }
@@ -164,6 +164,7 @@ function giveInformation() {
     }
     chambermaidInfo();
     showClaims();
+    addToLogs("Day" + night() + " begins");
 }
 
 function showClaims() {
@@ -397,7 +398,7 @@ function executePlayer(executed) {
 
     if (isGameRunning()) {
         localStorage.setItem("night", (night() + 1).toString());
-        console.log(executed.name + " is executed and " + (executed.isAlive ? "survives" : "dies") + n + "Night" + night() + " begins");
+        addToLogs(executed.name + " is executed and " + (executed.isAlive ? "survives" : "dies"));
         // dusk
         startNight();
     }

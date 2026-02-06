@@ -100,4 +100,14 @@ button:hover {
             }
         }
     }
+
+    #logs {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        top: 20%;
+        right: 20px;
+        text-align: start;
+        background: darkgray;
+    }
 }

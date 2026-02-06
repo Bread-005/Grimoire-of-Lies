@@ -36,4 +36,10 @@ function createPopup(text, top = "20%", right = "50%", parentElement = document.
     }, duration);
 }
 
-export {endGame, createPopup};
+function addToLogs(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    document.getElementById("logs").append(div);
+}
+
+export {endGame, createPopup, addToLogs};

@@ -1,6 +1,7 @@
 import {players} from "./roleSelection.js";
 
 let popupZIndex = 1000;
+const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
 
 function endGame(text = "", winningTeam = "") {
     createPopup("The Game ended", "35%");
@@ -42,4 +43,13 @@ function addToLogs(text) {
     document.getElementById("logs").append(div);
 }
 
-export {endGame, createPopup, addToLogs};
+async function databaseIsConnected() {
+    try {
+        const response = await fetch(API_URL + "/users");
+        return response.ok;
+    } catch (err) {
+        return false;
+    }
+}
+
+export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL};

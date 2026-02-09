@@ -1,7 +1,15 @@
 import {startGame} from "./roleSelection.js";
 import {isGameRunning} from "./src/shortcuts.js";
+import {API_URL} from "./shortcuts.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!localStorage.getItem("user")) {
+        localStorage.setItem("user", JSON.stringify({name: "", password: "", tempMessage: ""}));
+    }
+    if (!JSON.parse(localStorage.getItem("user")).name) {
+        window.location = "login.html";
+    }
+    const user = JSON.parse(localStorage.getItem("user"));
     const playerCountInput = document.getElementById("player-count-input");
 
     if (!localStorage.getItem("player-count")) {
@@ -10,13 +18,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!localStorage.getItem("game-is-running")) {
         localStorage.setItem("game-is-running", "false");
     }
-
     localStorage.setItem("game-is-running", "false");
 
+    const users = await fetch(API_URL + "/users").then(res => res.json());
+    if (!users.find(user1 => user1.name === user.name && user1.password === user.password)) {
+        localStorage.setItem("user", JSON.stringify({name: "User12345", password: "", tempMessage: "To grant access to public roles, you have to login or sign up to an account!"}));
+        window.location = "login.html";
+        return;
+    }
+
+    setupUserName();
     createGrimoire();
     setupPlayerCountSelection();
     document.getElementById("start-game-button").addEventListener("click", startGame);
-
 
     function createGrimoire() {
         const grimoire = document.getElementById("grimoire");
@@ -74,5 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("player-count", playerCountInput.value);
             createGrimoire();
         });
+    }
+
+    function setupUserName() {
+        document.getElementById("username-div").textContent = "Name: " + JSON.parse(localStorage.getItem("user")).name;
+        document.getElementById("logout-button").addEventListener("click", () => window.location = "login.html");
     }
 });

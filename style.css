@@ -29,14 +29,20 @@ button:hover {
     .settings {
         position: fixed;
         background-color: darkgray;
-        height: 70vh;
+        height: 75vh;
         width: 15vw;
-        top: 20%;
+        top: 15%;
         left: 20px;
         display: flex;
         flex-direction: column;
         justify-content: start;
         align-items: center;
+
+        .login-things {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
 
         .config {
             background-color: orange;
@@ -109,5 +115,33 @@ button:hover {
         right: 20px;
         text-align: start;
         background: darkgray;
+    }
+}
+
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .input-div {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .input-row {
+        margin: 2px;
+
+        input {
+            height: 1rem;
+            font-size: 1rem;
+        }
+    }
+
+    #login-page-login-button {
+        display: flex;
+        justify-content: center;
     }
 }

@@ -4,7 +4,7 @@ import {stewardInfo} from "./src/roles/steward.js";
 import {empathInfo} from "./src/roles/Trouble Brewing/empath.js";
 import {addToChambermaidList, chambermaidInfo, chambermaidList} from "./src/roles/Bad Moon Rising/chambermaid.js";
 import {mayorRedirect} from "./src/roles/Trouble Brewing/mayor.js";
-import {isMonkProtected} from "./src/roles/Trouble Brewing/monk.js";
+import {isMonkProtected, monkProtect} from "./src/roles/Trouble Brewing/monk.js";
 import {isTeaLadyProtected} from "./src/roles/Bad Moon Rising/tea_lady.js";
 import {washerwomanInfo} from "./src/roles/Trouble Brewing/washerwoman.js";
 import {librarianInfo} from "./src/roles/Trouble Brewing/librarian.js";
@@ -21,6 +21,12 @@ import {minstrelCheck} from "./src/roles/Bad Moon Rising/minstrel.js";
 import {moonChildPick} from "./src/roles/Bad Moon Rising/moonchild.js";
 import {assassinKill} from "./src/roles/Bad Moon Rising/assassin.js";
 import {godfatherKill} from "./src/roles/Bad Moon Rising/godfather.js";
+import {sailorPick} from "./src/roles/Bad Moon Rising/sailor.js";
+import {poisonerPoison} from "./src/roles/Trouble Brewing/poisoner.js";
+import {devilsAdvocateChoice} from "./src/roles/Bad Moon Rising/devils_advocate.js";
+import {gamblerGamble} from "./src/roles/Bad Moon Rising/gambler.js";
+import {exorcistChoice} from "./src/roles/Bad Moon Rising/exorcist.js";
+import {pukkaPoisoning} from "./src/roles/Bad Moon Rising/pukka.js";
 
 const n = "\n";
 const characterTypeDistribution = [
@@ -43,7 +49,10 @@ const goodRoles = townsfolkRoles.concat(outsiderRoles);
 const evilRoles = minionRoles.concat(demonRoles);
 const allRoles = goodRoles.concat(evilRoles);
 
-function startGame() {
+// todo - Recluse soll immer als böse registrieren
+// todo - Spy soll immer als gut registrieren
+
+async function startGame() {
     if (storage.night > 0) return;
 
     if (townsfolkRoles.length < storage.playerCount) {
@@ -62,7 +71,14 @@ function startGame() {
 
     storage.night = 1;
     players.length = 0;
-    storage.startTime = new Date().toLocaleString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"});
+    storage.startTime = new Date().toLocaleString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
 
     document.getElementById("start-game-button").style.display = "none";
     document.getElementById("player-count-input").style.display = "none";
@@ -135,7 +151,7 @@ function startGame() {
         }
     }
 
-    players.sort((a,b) => a.seat - b.seat);
+    players.sort((a, b) => a.seat - b.seat);
 
     for (const player of players) {
         const playerCircle = document.getElementById("player-circle" + player.seat);
@@ -143,12 +159,13 @@ function startGame() {
         playerCircle.addEventListener("click", () => executePlayer(player));
     }
 
-    startNight();
+    await startNight();
 }
 
-function startNight() {
+async function startNight() {
     addToLogs("Night" + storage.night + " begins");
-    nightDeaths();
+    await preDeathNightActions();
+    await nightDeaths();
     giveInformation();
 }
 
@@ -183,6 +200,16 @@ function showClaims() {
         playerInfo.style.visibility = player.info ? "visible" : "hidden";
         playerInfo.textContent = player.info;
     }
+}
+
+async function preDeathNightActions() {
+    sailorPick();
+    poisonerPoison();
+    devilsAdvocateChoice();
+    monkProtect();
+    await gamblerGamble();
+    exorcistChoice();
+    await pukkaPoisoning();
 }
 
 async function nightDeaths() {

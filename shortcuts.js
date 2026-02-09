@@ -1,4 +1,5 @@
 import {allRoles, players} from "./roleSelection.js";
+import {isDrunk} from "./src/shortcuts.js";
 
 let popupZIndex = 1000;
 const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
@@ -19,9 +20,35 @@ async function endGame(text = "", winningTeam = "") {
 
     const games = await fetch(API_URL + "/grimoire-of-lies/games").then(res => res.json());
 
+    // todo - extraStats noch hinzufügen (vielleicht auch direkt bei den Spielern)
+
+    const statsPlayers = [];
+
+    for (const player of players) {
+        const statsPlayer = {
+            name: player.name,
+            team: player.isGood ? "Good" : "Evil",
+            role: player.role.name,
+            startingRole: player.startingRole,
+            characterType: player.role.characterType,
+            bluff: player.bluff,
+            isAlive: player.isAlive,
+            isDrunk: isDrunk(player),
+            info: player.info,
+            seat: player.seat
+        }
+        if (!statsPlayer.startingRole) delete statsPlayer.startingRole;
+        if (player.role.name === "Fortune Teller") statsPlayer.FortuneTellerRedHering = player.redHering;
+        if (player.poisonerChain) statsPlayer.poisonerChain = player.poisonerChain;
+        if (player.role.name === "Virgin") statsPlayer.virginNominated = player.virginNominated;
+        if (player.butlerChain) statsPlayer.butlerChain = player.butlerChain;
+        if (player.devilsAdvocateChain) statsPlayer.devilsAdvocateChain = player.devilsAdvocateChain;
+        statsPlayers.push(statsPlayer);
+    }
+
     const game = {
         id: games.length + 1,
-        players: players,
+        players: statsPlayers,
         winningTeam: winningTeam,
         winningText: text,
         currentActivatedRoles: allRoles,

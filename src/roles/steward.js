@@ -1,10 +1,11 @@
 import {addToChambermaidList} from "./Bad Moon Rising/chambermaid.js";
-import {getsTrueInfo, isGood, night} from "../shortcuts.js";
+import {getPlayerByRole, getsTrueInfo, isGood} from "../shortcuts.js";
 import {players} from "../../roleSelection.js";
+import {storage} from "../../shortcuts.js";
 
 function stewardInfo(player) {
     if (player.bluff !== "Steward") return;
-    if (night() > 1) return;
+    if (storage.night > 1 && getPlayerByRole("Shabaloth")?.evilTarget?.name !== player.name) return;
 
     addToChambermaidList(player, "Steward");
 

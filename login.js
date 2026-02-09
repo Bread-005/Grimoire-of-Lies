@@ -1,4 +1,4 @@
-import {API_URL, databaseIsConnected} from "./shortcuts.js";
+import {API_URL, databaseIsConnected, saveLocalStorage, storage} from "./shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
 
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         userNames.push(user.name);
     }
 
-    loginMessage.textContent = localStorage.getItem("user").tempMessage;
+    loginMessage.textContent = storage.user.tempMessage;
 
     userNameInput.addEventListener("input", () => {
         if (userNames.includes(userNameInput.value)) {
@@ -68,7 +68,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 loginMessage.textContent = "Incorrect password";
                 return;
             }
-            localStorage.setItem("user", JSON.stringify({name: user.name, password: user.password, tempMessage: ""}));
+            storage.user.name = user.name;
+            storage.user.password = user.password;
+            saveLocalStorage();
             window.location = "index.html";
         }
     });

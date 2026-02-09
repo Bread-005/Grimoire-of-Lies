@@ -1,28 +1,30 @@
 import {startGame} from "./roleSelection.js";
-import {isGameRunning} from "./src/shortcuts.js";
-import {API_URL} from "./shortcuts.js";
+import {API_URL, saveLocalStorage, storage} from "./shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    if (!localStorage.getItem("user")) {
-        localStorage.setItem("user", JSON.stringify({name: "", password: "", tempMessage: ""}));
+    if (!localStorage.getItem("grimoire-of-lies")) {
+        const storage1 = {
+            user: {
+                name: "",
+                password: "",
+                tempMessage: ""
+            },
+            playerCount: 8,
+            night: 0
+        }
+        localStorage.setItem("grimoire-of-lies", JSON.stringify(storage1));
+        window.location.reload();
     }
-    if (!JSON.parse(localStorage.getItem("user")).name) {
+
+    if (!storage.user.name) {
         window.location = "login.html";
     }
-    const user = JSON.parse(localStorage.getItem("user"));
-    const playerCountInput = document.getElementById("player-count-input");
-
-    if (!localStorage.getItem("player-count")) {
-        localStorage.setItem("player-count", "8");
-    }
-    if (!localStorage.getItem("game-is-running")) {
-        localStorage.setItem("game-is-running", "false");
-    }
-    localStorage.setItem("game-is-running", "false");
 
     const users = await fetch(API_URL + "/users").then(res => res.json());
-    if (!users.find(user1 => user1.name === user.name && user1.password === user.password)) {
-        localStorage.setItem("user", JSON.stringify({name: "User12345", password: "", tempMessage: "To grant access to public roles, you have to login or sign up to an account!"}));
+    if (!users.find(user => user.name === storage.user.name && user.password === storage.user.password)) {
+        storage.user.name = "User12345";
+        storage.user.tempMessage = "To play Grimoire of Lies, you have to login. (This is the same account as Clocktower Homebrew Collection)";
+        saveLocalStorage();
         window.location = "login.html";
         return;
     }
@@ -40,11 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const centerY = 300;
         const radius = 220;
 
-        const playerCount = Number(localStorage.getItem("player-count"));
-
-        for (let i = 0; i < playerCount; i++) {
+        for (let i = 0; i < storage.playerCount; i++) {
             const offset = -Math.PI / 2;
-            const angle = offset + (2 * Math.PI / playerCount) * i;
+            const angle = offset + (2 * Math.PI / storage.playerCount) * i;
 
             const x = centerX + radius * Math.cos(angle);
             const y = centerY + radius * Math.sin(angle);
@@ -75,23 +75,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function setupPlayerCountSelection() {
-        playerCountInput.value = localStorage.getItem("player-count");
+        const playerCountInput = document.getElementById("player-count-input");
+        playerCountInput.value = storage.playerCount;
 
         playerCountInput.addEventListener("input", () => {
-            if (isGameRunning()) return;
             if (playerCountInput.value < 3) {
                 playerCountInput.value = 3;
             }
             if (playerCountInput.value > 12) {
                 playerCountInput.value = 12;
             }
-            localStorage.setItem("player-count", playerCountInput.value);
+            storage.playerCount = Number(playerCountInput.value);
+            saveLocalStorage();
             createGrimoire();
         });
     }
 
     function setupUserName() {
-        document.getElementById("username-div").textContent = "Name: " + JSON.parse(localStorage.getItem("user")).name;
+        document.getElementById("username-div").textContent = "Name: " + storage.user.name;
         document.getElementById("logout-button").addEventListener("click", () => window.location = "login.html");
     }
 });

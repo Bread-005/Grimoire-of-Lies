@@ -1,11 +1,12 @@
 import {twoPingRealInfo} from "./washerwoman.js";
 import {addToChambermaidList} from "../Bad Moon Rising/chambermaid.js";
-import {getPlayerByRole, getRandomPlayerNotAs, getsFalseInfo, getsTrueInfo, night} from "../../shortcuts.js";
+import {getPlayerByRole, getRandomPlayerNotAs, getsFalseInfo, getsTrueInfo} from "../../shortcuts.js";
 import {minionRoles, players} from "../../../roleSelection.js";
+import {storage} from "../../../shortcuts.js";
 
 function investigatorInfo(player) {
     if (player.bluff !== "Investigator") return;
-    if (night() > 1 && getPlayerByRole("Shabaloth")?.evilTarget?.name !== player.name) return;
+    if (storage.night > 1 && getPlayerByRole("Shabaloth")?.evilTarget?.name !== player.name) return;
 
     addToChambermaidList(player, "Investigator");
 

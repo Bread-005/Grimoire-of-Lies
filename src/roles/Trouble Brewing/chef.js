@@ -1,10 +1,11 @@
-import {getPlayerByRole, getsFalseInfo, getsTrueInfo, isGood, night} from "../../shortcuts.js";
+import {getPlayerByRole, getsFalseInfo, getsTrueInfo, isGood} from "../../shortcuts.js";
 import {addToChambermaidList} from "../Bad Moon Rising/chambermaid.js";
 import {players} from "../../../roleSelection.js";
+import {storage} from "../../../shortcuts.js";
 
 function chefInfo(player) {
     if (player.bluff !== "Chef") return;
-    if (night() > 1 && getPlayerByRole("Shabaloth")?.evilTarget?.name !== player.name) return;
+    if (storage.night > 1 && getPlayerByRole("Shabaloth")?.evilTarget?.name !== player.name) return;
 
     addToChambermaidList(player, "Chef");
 

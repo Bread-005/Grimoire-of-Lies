@@ -4,10 +4,11 @@ let popupZIndex = 1000;
 const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
 
 function endGame(text = "", winningTeam = "") {
-    createPopup("The Game ended", "35%");
-    createPopup(text, "42%");
-    createPopup("The " + winningTeam + " Team has won", "49%");
-    localStorage.setItem("game-is-running", "false");
+    createPopup("The Game ended", {top: "35%"});
+    createPopup(text, {top: "42%"});
+    createPopup("The " + winningTeam + " Team has won", {top: "49%"});
+    storage.night = 0;
+    saveLocalStorage();
     setTimeout(() => window.location.reload(), 11000);
 
     for (const player of players) {
@@ -18,12 +19,13 @@ function endGame(text = "", winningTeam = "") {
     }
 }
 
-function createPopup(text, top = "20%", right = "50%", parentElement = document.getElementById("grimoire"), duration = 10000, backgroundColor = "lime") {
+function createPopup(text, options) {
     const popup = document.createElement("div");
     popup.classList.add("popup");
-    popup.style.top = top;
-    popup.style.right = right;
-    popup.style.backgroundColor = backgroundColor;
+    popup.style.top = options.top || "40%";
+    popup.style.right = options.right || "50%";
+    popup.style.backgroundColor = options.backgroundColor || "lime";
+    const parentElement = options.parentElement || document.getElementById("grimoire");
     popupZIndex++;
     popup.style.zIndex = popupZIndex.toString();
     const p = document.createElement("p");
@@ -32,9 +34,11 @@ function createPopup(text, top = "20%", right = "50%", parentElement = document.
     parentElement.append(popup);
 
     setTimeout(() => {
-        parentElement.removeChild(popup);
+        if (parentElement.contains(popup)) {
+            parentElement.removeChild(popup);
+        }
         popupZIndex--;
-    }, duration);
+    }, options.duration || 10000);
 }
 
 function addToLogs(text) {
@@ -52,4 +56,14 @@ async function databaseIsConnected() {
     }
 }
 
-export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL};
+const storage = JSON.parse(localStorage.getItem("grimoire-of-lies"));
+
+function saveLocalStorage() {
+    localStorage.setItem("grimoire-of-lies", JSON.stringify(storage));
+}
+
+function getRandomElement(array) {
+    return array.sort(() => Math.random() - 0.5)[0];
+}
+
+export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL, storage, saveLocalStorage, getRandomElement};

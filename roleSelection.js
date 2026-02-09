@@ -1,4 +1,4 @@
-import {alivePlayers, isDrunk, isGameRunning, isGood, night, playerCount, roleIsSoberAlive} from "./src/shortcuts.js";
+import {alivePlayers, isDrunk, isGood, roleIsSoberAlive} from "./src/shortcuts.js";
 import {chefInfo} from "./src/roles/Trouble Brewing/chef.js";
 import {stewardInfo} from "./src/roles/steward.js";
 import {empathInfo} from "./src/roles/Trouble Brewing/empath.js";
@@ -16,7 +16,7 @@ import {butlerInfo} from "./src/roles/Trouble Brewing/butler.js";
 import {undertakerInfo} from "./src/roles/Trouble Brewing/undertaker.js";
 import {assignNewImp} from "./src/roles/Trouble Brewing/imp.js";
 import {ravenkeeperInfo} from "./src/roles/Trouble Brewing/ravenkeeper.js";
-import {addToLogs, createPopup, endGame} from "./shortcuts.js";
+import {addToLogs, createPopup, endGame, saveLocalStorage, storage} from "./shortcuts.js";
 import {minstrelCheck} from "./src/roles/Bad Moon Rising/minstrel.js";
 import {moonChildPick} from "./src/roles/Bad Moon Rising/moonchild.js";
 import {assassinKill} from "./src/roles/Bad Moon Rising/assassin.js";
@@ -44,26 +44,29 @@ const evilRoles = minionRoles.concat(demonRoles);
 const allRoles = goodRoles.concat(evilRoles);
 
 function startGame() {
-    if (isGameRunning()) return;
+    if (storage.night > 0) return;
 
-    if (townsfolkRoles.length < playerCount()) {
-        createPopup("You need to activate more Townsfolk roles", "40%", "50%", document.getElementById("grimoire"), 10000, "red");
+    if (townsfolkRoles.length < storage.playerCount) {
+        createPopup("You need to activate more Townsfolk roles", {backgroundColor: "red"});
         return;
     }
-    if (playerCount() > characterTypeDistribution.length) {
-        createPopup("You selected too many players", "40%", "50%", document.getElementById("grimoire"), 10000, "red");
+    if (storage.playerCount > characterTypeDistribution.length) {
+        createPopup("You selected too many players", {backgroundColor: "red"});
         return;
     }
 
-    localStorage.setItem("game-is-running", "true");
-    localStorage.setItem("night", "1");
+    if (characterTypeDistribution[storage.playerCount][1] > outsiderRoles.length) {
+        createPopup("You need to activate more Outsider roles", {backgroundColor: "red"});
+        return;
+    }
 
+    storage.night = 1;
     players.length = 0;
 
     document.getElementById("start-game-button").style.display = "none";
     document.getElementById("player-count-input").style.display = "none";
 
-    for (let i = 0; i < playerCount(); i++) {
+    for (let i = 0; i < storage.playerCount; i++) {
         players.push({
             name: "Player " + i,
             seat: i,
@@ -143,7 +146,7 @@ function startGame() {
 }
 
 function startNight() {
-    addToLogs("Night" + night() + " begins");
+    addToLogs("Night" + storage.night + " begins");
     nightDeaths();
     giveInformation();
 }
@@ -164,7 +167,7 @@ function giveInformation() {
     }
     chambermaidInfo();
     showClaims();
-    addToLogs("Day" + night() + " begins");
+    addToLogs("Day" + storage.night + " begins");
 }
 
 function showClaims() {
@@ -182,7 +185,7 @@ function showClaims() {
 }
 
 function nightDeaths() {
-    if (night() === 1) return;
+    if (storage.night === 1) return;
 
     for (const player of players) {
         if (player.role.characterType !== "Demon") continue;
@@ -343,7 +346,7 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
 }
 
 function executePlayer(executed) {
-    if (!isGameRunning()) return;
+    if (storage.night === 0) return;
 
     for (const player of players) {
         if (player.role.name === "Grandmother" || player.role.name === "Moonchild") continue;
@@ -396,8 +399,9 @@ function executePlayer(executed) {
 
     chambermaidList.length = 0;
 
-    if (isGameRunning()) {
-        localStorage.setItem("night", (night() + 1).toString());
+    if (storage.night > 0) {
+        storage.night++;
+        saveLocalStorage();
         addToLogs(executed.name + " is executed and " + (executed.isAlive ? "survives" : "dies"));
         // dusk
         startNight();

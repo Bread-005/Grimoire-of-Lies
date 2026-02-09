@@ -40,7 +40,8 @@ const characterTypeDistribution = [
 ];
 const players = [];
 
-const townsfolkRoles = ["Steward", "Empath", "Chef", "Washerwoman", "Investigator"];
+const townsfolkRoles = ["Steward", "Empath", "Chef", "Washerwoman", "Investigator", "Librarian",
+    "Fortune Teller"];
 const outsiderRoles = ["Drunk"];
 const minionRoles = ["Scarlet Woman"];
 const demonRoles = ["Imp"];
@@ -48,9 +49,6 @@ const demonRoles = ["Imp"];
 const goodRoles = townsfolkRoles.concat(outsiderRoles);
 const evilRoles = minionRoles.concat(demonRoles);
 const allRoles = goodRoles.concat(evilRoles);
-
-// todo - Recluse soll immer als böse registrieren
-// todo - Spy soll immer als gut registrieren
 
 async function startGame() {
     if (storage.night > 0) return;
@@ -163,7 +161,7 @@ async function startGame() {
 }
 
 async function startNight() {
-    addToLogs("Night" + storage.night + " begins");
+    addToLogs("Night" + storage.night + ":");
     await preDeathNightActions();
     await nightDeaths();
     giveInformation();
@@ -185,7 +183,6 @@ function giveInformation() {
     }
     chambermaidInfo();
     showClaims();
-    addToLogs("Day" + storage.night + " begins");
 }
 
 function showClaims() {
@@ -254,11 +251,11 @@ async function nightDeaths() {
         }
     }
 
-    assassinKill();
-    godfatherKill();
+    await assassinKill();
+    await godfatherKill();
 
     for (const player of players) {
-        if (player.role.name === "Moonchild" && !isDrunk(player) && !player.isAlive && player.target && player.target.isGood) {
+        if (player.role.name === "Moonchild" && !isDrunk(player) && !player.isAlive && player.target && isGood(player.target)) {
             await dies(player.target, "night", player);
             delete player.target;
         }
@@ -432,8 +429,9 @@ async function executePlayer(executed) {
         saveLocalStorage();
         addToLogs(executed.name + " is executed and " + (executed.isAlive ? "survives" : "dies"));
         // dusk
-        startNight();
+        await startNight();
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles, allRoles};
+export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles, allRoles,
+    outsiderRoles};

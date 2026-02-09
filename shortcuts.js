@@ -1,22 +1,42 @@
-import {players} from "./roleSelection.js";
+import {allRoles, players} from "./roleSelection.js";
 
 let popupZIndex = 1000;
 const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
 
-function endGame(text = "", winningTeam = "") {
+async function endGame(text = "", winningTeam = "") {
     createPopup("The Game ended", {top: "35%"});
     createPopup(text, {top: "42%"});
     createPopup("The " + winningTeam + " Team has won", {top: "49%"});
     storage.night = 0;
     saveLocalStorage();
-    setTimeout(() => window.location.reload(), 11000);
 
     for (const player of players) {
-        if (!player.isGood) {
+        if (player.role.name !== player.bluff) {
             document.getElementById("player-role-image" + player.seat).src =
                 "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.role.name.toLowerCase().replaceAll(" ", "") + ".png";
         }
     }
+
+    const games = await fetch(API_URL + "/grimoire-of-lies/games").then(res => res.json());
+
+    const game = {
+        id: games.length + 1,
+        players: players,
+        winningTeam: winningTeam,
+        winningText: text,
+        currentActivatedRoles: allRoles,
+        realLifePlayer: storage.user.name,
+        startTime: storage.startTime,
+        endTime: new Date().toLocaleString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"})
+    };
+
+    await fetch(API_URL + '/grimoire-of-lies/games/create', {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(game)
+    });
+
+    setTimeout(() => window.location.reload(), 11000);
 }
 
 function createPopup(text, options) {

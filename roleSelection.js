@@ -62,6 +62,7 @@ function startGame() {
 
     storage.night = 1;
     players.length = 0;
+    storage.startTime = new Date().toLocaleString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"});
 
     document.getElementById("start-game-button").style.display = "none";
     document.getElementById("player-count-input").style.display = "none";
@@ -184,7 +185,7 @@ function showClaims() {
     }
 }
 
-function nightDeaths() {
+async function nightDeaths() {
     if (storage.night === 1) return;
 
     for (const player of players) {
@@ -218,11 +219,11 @@ function nightDeaths() {
         if (player.role.name === "Imp") alivePlayers = alivePlayers.filter(p => p.role.characterType !== "Minion");
 
         player.killTarget = mayorRedirect(alivePlayers[0], player);
-        dies(player.killTarget, "night", player);
+        await dies(player.killTarget, "night", player);
 
         if (player.role.name === "Shabaloth" && alivePlayers.length >= 2) {
             player.killTarget2 = mayorRedirect(alivePlayers[1], player);
-            dies(player.killTarget2, "night", player);
+            await dies(player.killTarget2, "night", player);
         }
     }
 
@@ -231,13 +232,13 @@ function nightDeaths() {
 
     for (const player of players) {
         if (player.role.name === "Moonchild" && !isDrunk(player) && !player.isAlive && player.target && player.target.isGood) {
-            dies(player.target, "night", player);
+            await dies(player.target, "night", player);
             delete player.target;
         }
     }
 }
 
-function dies(player, phase, attacker = undefined, isExecution = false) {
+async function dies(player, phase, attacker = undefined, isExecution = false) {
 
     if (isDrunk(attacker)) return;
 
@@ -284,7 +285,7 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     if (attacker?.role.characterType === "Demon") {
         for (const player1 of alivePlayers()) {
             if (player1.role.name === "Grandmother" && !isDrunk(player1) && player.name === player1?.target?.name) {
-                dies(player1, phase, player1);
+                await dies(player1, phase, player1);
             }
         }
     }
@@ -313,11 +314,11 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     // check win conditions
 
     if (alivePlayers().length <= 2 && alivePlayers().filter(p => p.role.characterType === "Demon").length > 0) {
-        endGame("Only 2 players live", "Evil");
+        await endGame("Only 2 players live", "Evil");
         return;
     }
     if (!alivePlayers().find(p => p.role.characterType === "Demon") && !players.find(p => p.role.name === "Zombuul" && p.lifes > 0 && !isDrunk(p))) {
-        endGame("There is no living Demon", "Good");
+        await endGame("There is no living Demon", "Good");
         return;
     }
     if (phase === "night") {
@@ -345,7 +346,7 @@ function dies(player, phase, attacker = undefined, isExecution = false) {
     }
 }
 
-function executePlayer(executed) {
+async function executePlayer(executed) {
     if (storage.night === 0) return;
 
     for (const player of players) {
@@ -360,9 +361,9 @@ function executePlayer(executed) {
     }
 
     if (executed.isAlive || executed.role.name === "Zombuul") {
-        dies(executed, "day", undefined, true);
+        await dies(executed, "day", undefined, true);
         if (executed.role.name === "Saint" && !executed.isAlive && !isDrunk(executed)) {
-            endGame();
+            await endGame();
             return;
         }
         minstrelCheck(executed);
@@ -377,7 +378,7 @@ function executePlayer(executed) {
     }
     if (!executed.isAlive) {
         if (alivePlayers().length === 3 && roleIsSoberAlive("Mayor")) {
-            endGame("Mayor Win!", "Good");
+            await endGame("Mayor Win!", "Good");
             return;
         }
     }
@@ -408,4 +409,4 @@ function executePlayer(executed) {
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles};
+export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles, allRoles};

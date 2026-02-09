@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tempMessage: ""
             },
             playerCount: 8,
-            night: 0
+            night: 0,
+            startTime: ""
         }
         localStorage.setItem("grimoire-of-lies", JSON.stringify(storage1));
         window.location.reload();

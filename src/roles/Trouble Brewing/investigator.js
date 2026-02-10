@@ -13,7 +13,7 @@ function investigatorInfo(player) {
     if (getsTrueInfo(player)) {
         let randomPlayer = players.filter(p => p.role.characterType === "Minion" && p.name !== player.name).sort(() => Math.random() - 0.5)[0];
         if (!randomPlayer) {
-            player.info += "Es gibt keine Minions";
+            player.info += "There are no Minions";
             return;
         }
         let role = randomPlayer.role.name;
@@ -29,7 +29,7 @@ function investigatorInfo(player) {
         list.push(getRandomPlayerNotAs(player.name, "", "", randomMinionRole));
         list.push(getRandomPlayerNotAs(player.name, list[0].name, "", randomMinionRole));
         list.sort(() => Math.random() - 0.5);
-        player.info += list[0].seat + " oder " + list[1].seat + " ist " + randomMinionRole;
+        player.info += list[0].seat + " or " + list[1].seat + " is " + randomMinionRole;
     }
 }
 

@@ -1,4 +1,4 @@
-import {startGame} from "./roleSelection.js";
+import {allRoles, startGame} from "./roleSelection.js";
 import {API_URL, saveLocalStorage, storage} from "./shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -11,7 +11,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             playerCount: 8,
             night: 0,
-            startTime: ""
+            startTime: "",
+            selectedRoles: []
+        }
+        for (const role of allRoles) {
+            storage1.selectedRoles.push(role);
         }
         localStorage.setItem("grimoire-of-lies", JSON.stringify(storage1));
         window.location.reload();
@@ -31,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     setupUserName();
+    setupRoleSelection();
     createGrimoire();
     setupPlayerCountSelection();
     document.getElementById("start-game-button").addEventListener("click", startGame);
@@ -95,5 +100,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     function setupUserName() {
         document.getElementById("username-div").textContent = "Name: " + storage.user.name;
         document.getElementById("logout-button").addEventListener("click", () => window.location = "login.html");
+    }
+
+    function setupRoleSelection() {
+        const select = document.getElementById("role-selection-dropdown");
+        for (const role of allRoles) {
+            const label = document.createElement("label");
+            label.for = role.name + "-role-selection-input";
+            const input = document.createElement("input");
+            input.id = role.name + "-role-selection-input";
+            input.type = "checkbox";
+            input.checked = storage.selectedRoles.map(role1 => role1.name).includes(role.name);
+            label.append(input);
+            label.append(role.name);
+            select.append(label);
+
+            input.addEventListener("click", (event) => {
+                if (storage.night > 0) {
+                    event.preventDefault();
+                    return;
+                }
+                if (storage.selectedRoles.map(role1 => role1.name).includes(role.name)) {
+                    storage.selectedRoles = storage.selectedRoles.filter(role1 => role1.name !== role.name);
+                } else {
+                    storage.selectedRoles.push(role);
+                }
+                saveLocalStorage();
+            });
+        }
     }
 });

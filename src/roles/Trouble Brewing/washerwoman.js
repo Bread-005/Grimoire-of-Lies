@@ -25,7 +25,7 @@ function twoPingRealInfo(player, randomPlayer) {
     list.push(randomPlayer);
     list.push(getRandomPlayer(player.name, list[0].name));
     list.sort(() => Math.random() - 0.5);
-    player.info += list[0].seat + " oder " + list[1].seat + " ist " + randomPlayer.role;
+    player.info += list[0].seat + " or " + list[1].seat + " is " + randomPlayer.role;
 }
 
 function twoPingFakeInfo(player, randomBluffPlayer) {
@@ -33,7 +33,7 @@ function twoPingFakeInfo(player, randomBluffPlayer) {
     list.push(randomBluffPlayer);
     list.push(getRandomPlayer(player.name, randomBluffPlayer.name));
     list.sort(() => Math.random() - 0.5);
-    player.info += list[0].seat + " oder " + list[1].seat + " ist " + randomBluffPlayer.bluff;
+    player.info += list[0].seat + " or " + list[1].seat + " is " + randomBluffPlayer.bluff;
 }
 
 export {washerwomanInfo, twoPingRealInfo, twoPingFakeInfo};

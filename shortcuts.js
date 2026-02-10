@@ -1,4 +1,4 @@
-import {allRoles, players} from "./roleSelection.js";
+import {players} from "./roleSelection.js";
 import {isDrunk} from "./src/shortcuts.js";
 
 let popupZIndex = 1000;
@@ -19,8 +19,6 @@ async function endGame(text = "", winningTeam = "") {
     }
 
     const games = await fetch(API_URL + "/grimoire-of-lies/games").then(res => res.json());
-
-    // todo - extraStats noch hinzufügen (vielleicht auch direkt bei den Spielern)
 
     const statsPlayers = [];
 
@@ -51,7 +49,7 @@ async function endGame(text = "", winningTeam = "") {
         players: statsPlayers,
         winningTeam: winningTeam,
         winningText: text,
-        currentActivatedRoles: allRoles,
+        currentActivatedRoles: storage.selectedRoles.map(role => role.name),
         realLifePlayer: storage.user.name,
         startTime: storage.startTime,
         endTime: new Date().toLocaleString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"})

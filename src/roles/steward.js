@@ -9,8 +9,8 @@ function stewardInfo(player) {
 
     addToChambermaidList(player, "Steward");
 
-    const player1 = players.filter(p => (getsTrueInfo(player) ? isGood(p) : !p.isGood) && p.name !== player.name).sort(() => Math.random() - 0.5)[0] || player;
-    player.info += player1.seat + " ist gut";
+    const player1 = players.filter(p => (getsTrueInfo(player) ? isGood(p) : !isGood(p)) && p.name !== player.name).sort(() => Math.random() - 0.5)[0] || player;
+    player.info += player1.seat + " is good";
 }
 
 export {stewardInfo};

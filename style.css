@@ -19,6 +19,11 @@ button:hover {
     opacity: 0.75;
 }
 
+input[type="checkbox"] {
+    transform: scale(1.5);
+    margin: 0 10px;
+}
+
 .main-page {
     display: flex;
     flex-direction: column;
@@ -59,12 +64,23 @@ button:hover {
         }
 
         .role-list {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: lightblue;
             margin: 20px 0;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding-top: 10px;
+
+            #role-selection-dropdown {
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                overflow-y: visible;
+                overflow-x: hidden;
+                height: 150px;
+            }
         }
 
         button {

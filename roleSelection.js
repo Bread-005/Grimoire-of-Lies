@@ -28,7 +28,6 @@ import {gamblerGamble} from "./src/roles/Bad Moon Rising/gambler.js";
 import {exorcistChoice} from "./src/roles/Bad Moon Rising/exorcist.js";
 import {pukkaPoisoning} from "./src/roles/Bad Moon Rising/pukka.js";
 
-const n = "\n";
 const characterTypeDistribution = [
     [0,0,0,0], [0,0,0,1], [1,0,0,1], [2,0,0,1], [2,1,0,1],
     [3,0,1,1], [3,1,1,1],
@@ -40,19 +39,37 @@ const characterTypeDistribution = [
 ];
 const players = [];
 
-const townsfolkRoles = ["Steward", "Empath", "Chef", "Washerwoman", "Investigator", "Librarian",
-    "Fortune Teller"];
-const outsiderRoles = ["Drunk"];
-const minionRoles = ["Scarlet Woman"];
-const demonRoles = ["Imp"];
+const allRoles = [
+    {name: "Steward", characterType: "Townsfolk"}, {name: "Empath", characterType: "Townsfolk"},
+    {name: "Chef", characterType: "Townsfolk"}, {name: "Imp", characterType: "Demon"},
+    {name: "Washerwoman", characterType: "Townsfolk"}, {name: "Investigator", characterType: "Townsfolk"},
+    {name: "Scarlet Woman", characterType: "Minion"}, {name: "Drunk", characterType: "Outsider"},
+    {name: "Librarian", characterType: "Townsfolk"}, {name: "Fortune Teller", characterType: "Townsfolk"}
+];
+const townsfolkRoles = [];
+const outsiderRoles = [];
+const minionRoles = [];
+const demonRoles = [];
 
-const goodRoles = townsfolkRoles.concat(outsiderRoles);
-const evilRoles = minionRoles.concat(demonRoles);
-const allRoles = goodRoles.concat(evilRoles);
+let goodRoles = [];
+let evilRoles = [];
 
 async function startGame() {
     if (storage.night > 0) return;
 
+    for (const role of storage.selectedRoles) {
+        if (role.characterType === "Townsfolk") townsfolkRoles.push(role.name);
+        if (role.characterType === "Outsider") outsiderRoles.push(role.name);
+        if (role.characterType === "Minion") minionRoles.push(role.name);
+        if (role.characterType === "Demon") demonRoles.push(role.name);
+    }
+    goodRoles = townsfolkRoles.concat(outsiderRoles);
+    evilRoles = minionRoles.concat(demonRoles);
+
+    if (demonRoles.length === 0) {
+        createPopup("You have at least activate 1 Demon role", {backgroundColor: "red"});
+        return;
+    }
     if (townsfolkRoles.length < storage.playerCount) {
         createPopup("You need to activate more Townsfolk roles", {backgroundColor: "red"});
         return;
@@ -433,5 +450,5 @@ async function executePlayer(executed) {
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, n, dies, minionRoles, townsfolkRoles, allRoles,
+export {players, startGame, goodRoles, evilRoles, executePlayer, dies, minionRoles, townsfolkRoles, allRoles,
     outsiderRoles};

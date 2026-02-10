@@ -13,7 +13,7 @@ function librarianInfo(player) {
 
     if (getsTrueInfo(player)) {
         if (players.filter(p => p.role.characterType === "Outsider").length === 0) {
-            player.info += "0 Outsider sind im Spiel";
+            player.info += "0 Outsiders in-play";
         } else {
             const randomPlayer = players.filter(p => p.name !== player.name && (p.role.characterType === "Outsider" || spyBluffsAs(p,"Outsider"))).sort(() => Math.random() - 0.5)[0];
             const role = randomPlayer.role.name === "Spy" ? randomPlayer.bluff : randomPlayer.role.name;
@@ -26,7 +26,7 @@ function librarianInfo(player) {
             const list = [];
             list.push(getRandomPlayerNotAs(player.name,"","","Drunk"));
             list.push(getRandomPlayerNotAs(player.name, list[0].name, "", "Drunk"));
-            player.info += list[0].seat + " oder " + list[1].seat + " ist Drunk";
+            player.info += list[0].seat + " or " + list[1].seat + " is Drunk";
         } else {
             const randomBluffPlayer = outsiderBluffPlayers.sort(() => Math.random() - 0.5)[0];
             twoPingFakeInfo(player, randomBluffPlayer);

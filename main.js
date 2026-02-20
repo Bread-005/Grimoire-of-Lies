@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem("grimoire-of-lies", JSON.stringify(storage1));
         window.location.reload();
     }
+    storage.night = 0;
+    saveLocalStorage();
 
     if (!storage.user.name) {
         window.location = "login.html";

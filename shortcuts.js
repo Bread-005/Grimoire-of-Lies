@@ -104,9 +104,4 @@ function getRandomElement(array) {
 
 const loginStorage = JSON.parse(localStorage.getItem("login-page"));
 
-function saveLoginStorage() {
-    localStorage.setItem("login-page", JSON.stringify(loginStorage));
-}
-
-export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL, storage, saveLocalStorage, getRandomElement,
-    loginStorage, saveLoginStorage};
+export {endGame, createPopup, addToLogs, API_URL, storage, saveLocalStorage, getRandomElement, loginStorage};

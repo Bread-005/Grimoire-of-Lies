@@ -1,14 +1,9 @@
 import {allRoles, startGame} from "./roleSelection.js";
-import {API_URL, saveLocalStorage, storage} from "./shortcuts.js";
+import {API_URL, loginStorage, saveLocalStorage, storage} from "./shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     if (!localStorage.getItem("grimoire-of-lies")) {
         const storage1 = {
-            user: {
-                name: "",
-                password: "",
-                tempMessage: ""
-            },
             playerCount: 8,
             night: 0,
             startTime: "",
@@ -20,19 +15,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem("grimoire-of-lies", JSON.stringify(storage1));
         window.location.reload();
     }
+    if (storage.user) {
+        delete storage.user;
+    }
+
     storage.night = 0;
     saveLocalStorage();
 
-    if (!storage.user.name) {
-        window.location = "login.html";
+    if (!localStorage.getItem("login-page")) {
+        window.location = "https://bread-005.github.io/login-page/index.html";
     }
 
     const users = await fetch(API_URL + "/users").then(res => res.json());
-    if (!users.find(user => user.name === storage.user.name && user.password === storage.user.password)) {
-        storage.user.name = "User12345";
-        storage.user.tempMessage = "To play Grimoire of Lies, you have to login. (This is the same account as Clocktower Homebrew Collection)";
-        saveLocalStorage();
-        window.location = "login.html";
+    if (loginStorage.password !== users.find(user => user.name === loginStorage.name)?.password) {
+        window.location = "https://bread-005.github.io/login-page/index.html";
         return;
     }
 
@@ -100,8 +96,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function setupUserName() {
-        document.getElementById("username-div").textContent = "Name: " + storage.user.name;
-        document.getElementById("logout-button").addEventListener("click", () => window.location = "login.html");
+        document.getElementById("username-div").textContent = "Name: " + loginStorage.name;
+        document.getElementById("logout-button").addEventListener("click", () => window.location = "https://bread-005.github.io/login-page/index.html");
     }
 
     function setupRoleSelection() {

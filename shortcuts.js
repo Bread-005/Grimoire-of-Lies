@@ -50,7 +50,7 @@ async function endGame(text = "", winningTeam = "") {
         winningTeam: winningTeam,
         winningText: text,
         currentActivatedRoles: storage.selectedRoles.map(role => role.name),
-        realLifePlayer: storage.user.name,
+        realLifePlayer: loginStorage.name,
         startTime: storage.startTime,
         endTime: new Date().toLocaleString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"})
     };
@@ -92,15 +92,6 @@ function addToLogs(text) {
     document.getElementById("logs").append(div);
 }
 
-async function databaseIsConnected() {
-    try {
-        const response = await fetch(API_URL + "/users");
-        return response.ok;
-    } catch (err) {
-        return false;
-    }
-}
-
 const storage = JSON.parse(localStorage.getItem("grimoire-of-lies"));
 
 function saveLocalStorage() {
@@ -111,4 +102,11 @@ function getRandomElement(array) {
     return array.sort(() => Math.random() - 0.5)[0];
 }
 
-export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL, storage, saveLocalStorage, getRandomElement};
+const loginStorage = JSON.parse(localStorage.getItem("login-page"));
+
+function saveLoginStorage() {
+    localStorage.setItem("login-page", JSON.stringify(loginStorage));
+}
+
+export {endGame, createPopup, addToLogs, databaseIsConnected, API_URL, storage, saveLocalStorage, getRandomElement,
+    loginStorage, saveLoginStorage};

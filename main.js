@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!localStorage.getItem("login-page")) {
         window.location = "https://bread-005.github.io/login-page/index.html";
+        return;
     }
 
     const users = await fetch(API_URL + "/users").then(res => res.json());
@@ -31,6 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location = "https://bread-005.github.io/login-page/index.html";
         return;
     }
+
+    await fetch(API_URL + '/users/update/' + loginStorage.name, {
+        method: "PUT",
+        headers: {'Content-Type': 'application/json'}
+    });
 
     setupUserName();
     setupRoleSelection();

@@ -46,5 +46,20 @@
   {
     "name": "Poisoner",
     "characterType": "Minion"
+  },
+  {
+    "name": "Soldier",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Recluse",
+    "characterType": "Outsider",
+    "extraInfo": "The Recluse always registers as evil, as a Minion & as a Demon to good abilities.",
+    "jinxes": [
+      {
+        "name": "Librarian",
+        "text": "The Recluse registers as the Recluse to the Librarian."
+      }
+    ]
   }
 ]

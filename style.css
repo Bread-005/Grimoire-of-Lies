@@ -123,6 +123,11 @@ input[type="checkbox"] {
         }
     }
 
+    .nominate-input {
+        margin-top: 10px;
+        height: 20px;
+    }
+
     #logs {
         position: fixed;
         display: flex;

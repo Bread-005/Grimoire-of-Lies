@@ -59,7 +59,7 @@ async function startGame() {
     evilRoles = minionRoles.concat(demonRoles);
 
     if (demonRoles.length === 0) {
-        createPopup("You have at least activate 1 Demon role", {backgroundColor: "red"});
+        createPopup("You have to activate at least one Demon role", {backgroundColor: "red"});
         return;
     }
     if (townsfolkRoles.length < storage.playerCount) {
@@ -70,7 +70,6 @@ async function startGame() {
         createPopup("You selected too many players", {backgroundColor: "red"});
         return;
     }
-
     if (characterTypeDistribution[storage.playerCount][1] > outsiderRoles.length) {
         createPopup("You need to activate more Outsider roles", {backgroundColor: "red"});
         return;
@@ -91,6 +90,19 @@ async function startGame() {
     document.getElementById("player-count-input").style.display = "none";
 
     setupPlayers();
+
+    if (players.find(player => player.bluff === "Virgin")) {
+        const input = document.createElement("input");
+        input.className = "nominate-input";
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                if (input.value.startsWith("nominate") && input.value.split(" ").length === 3) {
+                    nominate(Number(input.value.split(" ")[1]), Number(input.value.split(" ")[2]));
+                }
+            }
+        });
+        document.querySelector(".main-page").append(input);
+    }
 
     await startNight();
 }
@@ -442,7 +454,38 @@ function setupPlayers() {
     for (const player of players) {
         const playerCircle = document.getElementById("player-circle" + player.seat);
         playerCircle.style.cursor = "pointer";
-        playerCircle.addEventListener("click", () => executePlayer(player));
+        playerCircle.addEventListener("click", async (event) => {
+            if (event.target === playerCircle || event.target.tagName === "IMG") {
+                await executePlayer(player);
+            }
+        });
+    }
+}
+
+async function nominate(seat1, seat2) {
+    const nominator = players.find(p => p.seat === seat1);
+    const nominee = players.find(p => p.seat === seat2);
+
+    for (const player of alivePlayers()) {
+        if (player.bluff === "Butler" && nominator.name !== player.butlerChain[player.butlerChain.length - 1]) {
+            createPopup(nominator.name + " darf nicht nominieren!", {backgroundColor: "red", duration: 5000});
+            return;
+        }
+    }
+
+    if (!nominator || !nominee) return;
+
+    if (nominee.bluff !== "Virgin") {
+        createPopup("The nominee is not the Virgin. Nothing happens.", {backgroundColor: "red", duration: 5000});
+        return;
+    }
+    if (nominee.info) return;
+    if (nominee.role.name === "Virgin" && (nominator.role.characterType === "Townsfolk" || nominator.role.name === "Spy" && !nominator.isDrunk)) {
+        nominee.info = nominator.seat + " ist Townsfolk";
+        nominee.virginNominated = nominator.name;
+        await executePlayer(nominee);
+    } else {
+        nominee.info = nominator.seat + " ist kein Townsfolk";
     }
 }
 

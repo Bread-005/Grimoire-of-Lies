@@ -61,5 +61,9 @@
         "text": "The Recluse registers as the Recluse to the Librarian."
       }
     ]
+  },
+  {
+    "name": "Virgin",
+    "characterType": "Townsfolk"
   }
 ]

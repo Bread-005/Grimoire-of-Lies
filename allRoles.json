@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Steward",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Empath",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Chef",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Imp",
+    "characterType": "Demon"
+  },
+  {
+    "name": "Washerwoman",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Investigator",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Scarlet Woman",
+    "characterType": "Minion"
+  },
+  {
+    "name": "Drunk",
+    "characterType": "Outsider"
+  },
+  {
+    "name": "Librarian",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Fortune Teller",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Saint",
+    "characterType": "Outsider"
+  },
+  {
+    "name": "Poisoner",
+    "characterType": "Minion"
+  }
+]

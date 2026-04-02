@@ -1,7 +1,10 @@
-import {allRoles, startGame} from "./roleSelection.js";
+import {startGame} from "./roleSelection.js";
 import {API_URL, loginStorage, saveLocalStorage, storage} from "./shortcuts.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    const allRoles = await fetch("./allRoles.json").then(res => res.json());
+
     if (!localStorage.getItem("grimoire-of-lies")) {
         const storage1 = {
             playerCount: 8,

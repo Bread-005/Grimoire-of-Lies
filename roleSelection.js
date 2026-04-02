@@ -38,14 +38,6 @@ const characterTypeDistribution = [
     [13,0,5,1], [13,1,5,1], [13,2,5,1]
 ];
 const players = [];
-
-const allRoles = [
-    {name: "Steward", characterType: "Townsfolk"}, {name: "Empath", characterType: "Townsfolk"},
-    {name: "Chef", characterType: "Townsfolk"}, {name: "Imp", characterType: "Demon"},
-    {name: "Washerwoman", characterType: "Townsfolk"}, {name: "Investigator", characterType: "Townsfolk"},
-    {name: "Scarlet Woman", characterType: "Minion"}, {name: "Drunk", characterType: "Outsider"},
-    {name: "Librarian", characterType: "Townsfolk"}, {name: "Fortune Teller", characterType: "Townsfolk"}
-];
 const townsfolkRoles = [];
 const outsiderRoles = [];
 const minionRoles = [];
@@ -98,81 +90,7 @@ async function startGame() {
     document.getElementById("start-game-button").style.display = "none";
     document.getElementById("player-count-input").style.display = "none";
 
-    for (let i = 0; i < storage.playerCount; i++) {
-        players.push({
-            name: "Player " + i,
-            seat: i,
-            role: {
-                name: "",
-                characterType: "Townsfolk"
-            },
-            isGood: true,
-            bluff: "",
-            isAlive: true,
-            info: "",
-            drunkSources: []
-        });
-    }
-    players.sort(() => Math.random() - 0.5);
-    let townsfolkCount = characterTypeDistribution[players.length][0];
-    const minionCount = characterTypeDistribution[players.length][2];
-
-    // Demon Setup
-    players[0].isGood = false;
-    players[0].role.characterType = "Demon";
-    players[0].role.name = demonRoles.sort(() => Math.random() - 0.5)[0];
-    if (players[0].role.name === "Zombuul") players[0].lifes = 2;
-
-    // Minions Setup
-    for (let i = 1; i < 1 + minionCount; i++) {
-        players[i].isGood = false;
-        players[i].role.characterType = "Minion";
-        players[i].role.name = minionRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
-    }
-    if (players.find(p => p.role.name === "Baron")) {
-        if (players.length > 6) townsfolkCount -= 2;
-        if (players.length < 7) townsfolkCount -= 1;
-    }
-    if (players.find(p => p.role.name === "Godfather")) {
-        if (Math.random() < 0.2) townsfolkCount++;
-        else townsfolkCount--;
-    }
-
-    // Townsfolk Setup
-    for (let i = 1 + minionCount; i < 1 + minionCount + townsfolkCount; i++) {
-        players[i].role.name = townsfolkRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
-        players[i].bluff = players[i].role.name;
-    }
-    // Outsider Setup
-    for (let i = 1 + minionCount + townsfolkCount; i < players.length; i++) {
-        players[i].role.characterType = "Outsider";
-        players[i].role.name = outsiderRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
-        players[i].bluff = players[i].role.name;
-    }
-
-    // Evil Bluff Setup
-    for (const player of players) {
-        if (player.isGood) continue;
-        let unusedBluffs = goodRoles.filter(role => !players.map(p => p.bluff).includes(role) && role !== "Drunk");
-        if (player.role.characterType === "Demon") unusedBluffs = unusedBluffs.filter(role => role !== "Knight");
-        player.bluff = unusedBluffs.sort(() => Math.random() - 0.5)[0];
-    }
-
-    // Drunk Bluff
-    for (const player of players) {
-        if (player.role.name === "Drunk") {
-            player.bluff = townsfolkRoles.filter(role => !players.map(p => p.bluff).includes(role))[0];
-            player.drunkSources.push("Drunk");
-        }
-    }
-
-    players.sort((a, b) => a.seat - b.seat);
-
-    for (const player of players) {
-        const playerCircle = document.getElementById("player-circle" + player.seat);
-        playerCircle.style.cursor = "pointer";
-        playerCircle.addEventListener("click", () => executePlayer(player));
-    }
+    setupPlayers();
 
     await startNight();
 }
@@ -450,5 +368,82 @@ async function executePlayer(executed) {
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, dies, minionRoles, townsfolkRoles, allRoles,
-    outsiderRoles};
+function setupPlayers() {
+    for (let i = 0; i < storage.playerCount; i++) {
+        players.push({
+            name: "Player " + i,
+            seat: i,
+            role: {
+                name: "",
+                characterType: "Townsfolk"
+            },
+            isGood: true,
+            bluff: "",
+            isAlive: true,
+            info: "",
+            drunkSources: []
+        });
+    }
+    players.sort(() => Math.random() - 0.5);
+    let townsfolkCount = characterTypeDistribution[players.length][0];
+    const minionCount = characterTypeDistribution[players.length][2];
+
+    // Demon Setup
+    players[0].isGood = false;
+    players[0].role.characterType = "Demon";
+    players[0].role.name = demonRoles.sort(() => Math.random() - 0.5)[0];
+    if (players[0].role.name === "Zombuul") players[0].lifes = 2;
+
+    // Minions Setup
+    for (let i = 1; i < 1 + minionCount; i++) {
+        players[i].isGood = false;
+        players[i].role.characterType = "Minion";
+        players[i].role.name = minionRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
+    }
+    if (players.find(p => p.role.name === "Baron")) {
+        if (players.length > 6) townsfolkCount -= 2;
+        if (players.length < 7) townsfolkCount -= 1;
+    }
+    if (players.find(p => p.role.name === "Godfather")) {
+        if (Math.random() < 0.2) townsfolkCount++;
+        else townsfolkCount--;
+    }
+
+    // Townsfolk Setup
+    for (let i = 1 + minionCount; i < 1 + minionCount + townsfolkCount; i++) {
+        players[i].role.name = townsfolkRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
+        players[i].bluff = players[i].role.name;
+    }
+    // Outsider Setup
+    for (let i = 1 + minionCount + townsfolkCount; i < players.length; i++) {
+        players[i].role.characterType = "Outsider";
+        players[i].role.name = outsiderRoles.filter(role => !players.map(p => p.role.name).includes(role)).sort(() => Math.random() - 0.5)[0];
+        players[i].bluff = players[i].role.name;
+    }
+
+    // Evil Bluff Setup
+    for (const player of players) {
+        if (player.isGood) continue;
+        let unusedBluffs = goodRoles.filter(role => !players.map(p => p.bluff).includes(role) && role !== "Drunk");
+        if (player.role.characterType === "Demon") unusedBluffs = unusedBluffs.filter(role => role !== "Knight");
+        player.bluff = unusedBluffs.sort(() => Math.random() - 0.5)[0];
+    }
+
+    // Drunk Bluff
+    for (const player of players) {
+        if (player.role.name === "Drunk") {
+            player.bluff = townsfolkRoles.filter(role => !players.map(p => p.bluff).includes(role))[0];
+            player.drunkSources.push("Drunk");
+        }
+    }
+
+    players.sort((a, b) => a.seat - b.seat);
+
+    for (const player of players) {
+        const playerCircle = document.getElementById("player-circle" + player.seat);
+        playerCircle.style.cursor = "pointer";
+        playerCircle.addEventListener("click", () => executePlayer(player));
+    }
+}
+
+export {players, startGame, goodRoles, evilRoles, executePlayer, dies, minionRoles, townsfolkRoles, outsiderRoles};

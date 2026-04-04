@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     storage.night = 0;
     saveLocalStorage();
 
-    if (!localStorage.getItem("login-page")) {
+    if (!localStorage.getItem("login-page") || !loginStorage.name) {
         window.location = "https://bread-005.github.io/login-page/index.html";
         return;
     }

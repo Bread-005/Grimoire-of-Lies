@@ -483,9 +483,10 @@ async function nominate(seat1, seat2) {
     if (nominee.role.name === "Virgin" && (nominator.role.characterType === "Townsfolk" || nominator.role.name === "Spy" && !nominator.isDrunk)) {
         nominee.info = nominator.seat + " ist Townsfolk";
         nominee.virginNominated = nominator.name;
-        await executePlayer(nominee);
+        await executePlayer(nominator);
     } else {
         nominee.info = nominator.seat + " ist kein Townsfolk";
+        document.getElementById("player-info" + nominee.seat).textContent = nominee.info;
     }
 }
 

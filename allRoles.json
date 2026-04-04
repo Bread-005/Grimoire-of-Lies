@@ -65,5 +65,17 @@
   {
     "name": "Virgin",
     "characterType": "Townsfolk"
+  },
+  {
+    "name": "Butler",
+    "characterType": "Outsider"
+  },
+  {
+    "name": "Baron",
+    "characterType": "Minion"
+  },
+  {
+    "name": "Undertaker",
+    "characterType": "Townsfolk"
   }
 ]

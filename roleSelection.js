@@ -463,30 +463,38 @@ function setupPlayers() {
 }
 
 async function nominate(seat1, seat2) {
-    const nominator = players.find(p => p.seat === seat1);
-    const nominee = players.find(p => p.seat === seat2);
+    const nominator = alivePlayers().find(p => p.seat === seat1);
+    const nominee = alivePlayers().find(p => p.seat === seat2);
 
     for (const player of alivePlayers()) {
         if (player.bluff === "Butler" && nominator.name !== player.butlerChain[player.butlerChain.length - 1]) {
-            createPopup(nominator.name + " darf nicht nominieren!", {backgroundColor: "red", duration: 5000});
+            createPopup(nominator.name + " may not nominate!", {backgroundColor: "red", duration: 5000});
             return;
         }
     }
 
-    if (!nominator || !nominee) return;
+    if (!nominator) {
+        createPopup(nominator.name + " does not live or does not exist!", {backgroundColor: "red", duration: 5000});
+        return;
+    }
+    if (!nominee) {
+        createPopup(nominee.name + " does not live or does not exist!", {backgroundColor: "red", duration: 5000});
+        return;
+    }
 
     if (nominee.bluff !== "Virgin") {
         createPopup("The nominee is not the Virgin. Nothing happens.", {backgroundColor: "red", duration: 5000});
         return;
     }
     if (nominee.info) return;
-    if (nominee.role.name === "Virgin" && (nominator.role.characterType === "Townsfolk" || nominator.role.name === "Spy" && !nominator.isDrunk)) {
-        nominee.info = nominator.seat + " ist Townsfolk";
+    if (nominee.role.name === "Virgin" && !isDrunk(nominee) && (nominator.role.characterType === "Townsfolk" || nominator.role.name === "Spy" && !nominator.isDrunk)) {
+        nominee.info = nominator.seat + " is Townsfolk";
         nominee.virginNominated = nominator.name;
         await executePlayer(nominator);
     } else {
-        nominee.info = nominator.seat + " ist kein Townsfolk";
+        nominee.info = nominator.seat + " is not a Townsfolk";
         document.getElementById("player-info" + nominee.seat).textContent = nominee.info;
+        document.getElementById("player-info" + nominee.seat).style.visibility = "visible";
     }
 }
 

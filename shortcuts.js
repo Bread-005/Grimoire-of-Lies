@@ -5,9 +5,10 @@ let popupZIndex = 1000;
 const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
 
 async function endGame(text = "", winningTeam = "") {
-    createPopup("The Game ended", {top: "35%"});
+    if (storage.night === 0) return;
+    createPopup("The Game ended", {top: "34%"});
     createPopup(text, {top: "42%"});
-    createPopup("The " + winningTeam + " Team has won", {top: "49%"});
+    createPopup("The " + winningTeam + " Team has won", {top: "50%"});
     storage.night = 0;
     saveLocalStorage();
 

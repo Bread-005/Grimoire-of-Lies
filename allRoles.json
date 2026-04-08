@@ -59,6 +59,14 @@
       {
         "name": "Librarian",
         "text": "The Recluse registers as the Recluse to the Librarian."
+      },
+      {
+        "name": "Knight",
+        "text": "The Recluse registers as the Recluse to the Knight."
+      },
+      {
+        "name": "Slayer",
+        "text": "The Recluse registers as the Recluse to the Slayer."
       }
     ]
   },
@@ -76,6 +84,18 @@
   },
   {
     "name": "Undertaker",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Ravenkeeper",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Knight",
+    "characterType": "Townsfolk"
+  },
+  {
+    "name": "Slayer",
     "characterType": "Townsfolk"
   }
 ]

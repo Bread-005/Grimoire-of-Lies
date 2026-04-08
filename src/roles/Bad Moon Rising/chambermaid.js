@@ -7,7 +7,7 @@ function chambermaidInfo() {
     for (const player of alivePlayers()) {
         if (player.bluff !== "Chambermaid") continue;
         if (alivePlayers().length < 3) {
-            player.info = "zu wenige leben";
+            player.info = "to few players live";
             continue;
         }
 

@@ -27,6 +27,7 @@ import {devilsAdvocateChoice} from "./src/roles/Bad Moon Rising/devils_advocate.
 import {gamblerGamble} from "./src/roles/Bad Moon Rising/gambler.js";
 import {exorcistChoice} from "./src/roles/Bad Moon Rising/exorcist.js";
 import {pukkaPoisoning} from "./src/roles/Bad Moon Rising/pukka.js";
+import {slayerShoot} from "./src/roles/Trouble Brewing/slayer.js";
 
 const characterTypeDistribution = [
     [0,0,0,0], [0,0,0,1], [1,0,0,1], [2,0,0,1], [2,1,0,1],
@@ -91,13 +92,16 @@ async function startGame() {
 
     setupPlayers();
 
-    if (players.find(player => player.bluff === "Virgin")) {
+    if (players.find(player => player.bluff === "Virgin" || player.bluff === "Slayer")) {
         const input = document.createElement("input");
         input.className = "nominate-input";
-        input.addEventListener("keydown", (event) => {
+        input.addEventListener("keydown", async (event) => {
             if (event.key === "Enter") {
                 if (input.value.startsWith("nominate") && input.value.split(" ").length === 3) {
-                    nominate(Number(input.value.split(" ")[1]), Number(input.value.split(" ")[2]));
+                    await nominate(Number(input.value.split(" ")[1]), Number(input.value.split(" ")[2]));
+                }
+                if (input.value.startsWith("slayer") && input.value.split(" ").length === 3) {
+                    await slayerShoot(Number(input.value.split(" ")[1]), Number(input.value.split(" ")[2]));
                 }
             }
         });
@@ -334,7 +338,7 @@ async function executePlayer(executed) {
     if (executed.isAlive || executed.role.name === "Zombuul") {
         await dies(executed, "day", undefined, true);
         if (executed.role.name === "Saint" && !executed.isAlive && !isDrunk(executed)) {
-            await endGame();
+            await endGame("The Saint was executed", isGood(executed) ? "Evil" : "Good");
             return;
         }
         minstrelCheck(executed);
@@ -498,4 +502,5 @@ async function nominate(seat1, seat2) {
     }
 }
 
-export {players, startGame, goodRoles, evilRoles, executePlayer, dies, minionRoles, townsfolkRoles, outsiderRoles};
+export {players, startGame, goodRoles, evilRoles, executePlayer, dies, minionRoles, townsfolkRoles, outsiderRoles,
+    characterTypeDistribution};

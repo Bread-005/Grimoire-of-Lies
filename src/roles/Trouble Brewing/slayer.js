@@ -20,12 +20,15 @@ async function slayerShoot(seat1, seat2) {
         return;
     }
 
+    document.getElementById("player-info" + shooter.seat).style.visibility = "visible";
     if (shooter.role.name !== "Slayer" || isDrunk(shooter) || target.role.characterType !== "Demon") {
         shooter.info = "I tried to shoot " + target.seat;
+        document.getElementById("player-info" + shooter.seat).textContent = shooter.info;
         return;
     }
 
     shooter.info = "I killed " + target.seat;
+    document.getElementById("player-info" + shooter.seat).textContent = shooter.info;
     await dies(target, "day", shooter);
 }
 

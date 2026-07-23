@@ -93,6 +93,19 @@ async function startGame() {
     setupPlayers();
 
     if (players.find(player => player.bluff === "Virgin" || player.bluff === "Slayer")) {
+        const nominateRow = document.createElement("div");
+        nominateRow.className = "nominate-row";
+
+        const infoIcon = document.createElement("i");
+        infoIcon.className = "fa-solid fa-circle-info info-icon";
+
+        const infoBox = document.createElement("div");
+        infoBox.className = "info-box";
+        infoBox.innerHTML = "Type <b>nominate &lt;seat1&gt; &lt;seat2&gt;</b> and press Enter to let the player " +
+            "at seat1 nominate the player at seat2 (used to trigger the Virgin ability).<br><br>" +
+            "Type <b>slayer &lt;seat1&gt; &lt;seat2&gt;</b> and press Enter to let the player at seat1 use their " +
+            "Slayer ability on the player at seat2.";
+
         const input = document.createElement("input");
         input.className = "nominate-input";
         input.addEventListener("keydown", async (event) => {
@@ -105,7 +118,9 @@ async function startGame() {
                 }
             }
         });
-        document.querySelector(".main-page").append(input);
+
+        nominateRow.append(infoIcon, infoBox, input);
+        document.querySelector(".main-page").append(nominateRow);
     }
 
     await startNight();

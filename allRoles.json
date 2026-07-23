@@ -54,20 +54,10 @@
   {
     "name": "Recluse",
     "characterType": "Outsider",
-    "extraInfo": "The Recluse always registers as evil, as a Minion & as a Demon to good abilities.",
-    "jinxes": [
-      {
-        "name": "Librarian",
-        "text": "The Recluse registers as the Recluse to the Librarian."
-      },
-      {
-        "name": "Knight",
-        "text": "The Recluse registers as the Recluse to the Knight."
-      },
-      {
-        "name": "Slayer",
-        "text": "The Recluse registers as the Recluse to the Slayer."
-      }
+    "extraInfo": "The Recluse might (mostly 70%) registers as evil, as a Minion & as a Demon to good abilities.",
+    "explanations": [
+      "There is a 30% cahnce, the Slayer kills the Recluse when shooting them.",
+      "There is a 30% chance, the Investigator´s target is the Recluse."
     ]
   },
   {

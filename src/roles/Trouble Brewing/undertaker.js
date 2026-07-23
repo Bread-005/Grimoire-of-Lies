@@ -15,7 +15,7 @@ function undertakerInfo(player) {
     if (player.info.length > 0) player.info += " ";
     if (getsTrueInfo(player)) {
         let role = executed.role.name;
-        if (executed.role.name === "Recluse") role = evilRoles.sort(() => Math.random() - 0.5)[0];
+        if (executed.role.name === "Recluse" && Math.random() < 0.7) role = evilRoles.sort(() => Math.random() - 0.5)[0];
         if (executed.role.name === "Spy") role = executed.bluff;
         player.info = executed.seat + " is " + role;
     }

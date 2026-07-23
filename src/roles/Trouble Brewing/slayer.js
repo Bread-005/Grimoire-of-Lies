@@ -21,15 +21,16 @@ async function slayerShoot(seat1, seat2) {
     }
 
     document.getElementById("player-info" + shooter.seat).style.visibility = "visible";
-    if (shooter.role.name !== "Slayer" || isDrunk(shooter) || target.role.characterType !== "Demon") {
-        shooter.info = "I tried to shoot " + target.seat;
-        document.getElementById("player-info" + shooter.seat).textContent = shooter.info;
-        return;
+    if (shooter.role.name === "Slayer" && !isDrunk(shooter)) {
+        if (target.role.characterType === "Demon" || target.role.name === "Recluse" && !isDrunk(target) && Math.random() < 0.3) {
+            shooter.info = "I killed " + target.seat;
+            document.getElementById("player-info" + shooter.seat).textContent = shooter.info;
+            await dies(target, "day", shooter);
+            return;
+        }
     }
-
-    shooter.info = "I killed " + target.seat;
+    shooter.info = "I tried to shoot " + target.seat;
     document.getElementById("player-info" + shooter.seat).textContent = shooter.info;
-    await dies(target, "day", shooter);
 }
 
 export {slayerShoot};

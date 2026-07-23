@@ -10,7 +10,7 @@ function ravenkeeperInfo(player) {
 
     if (getsTrueInfo(player)) {
         let role = randomAlivePlayer.role.name;
-        if (randomAlivePlayer.role.name === "Recluse") role = getRandomElement(evilRoles);
+        if (randomAlivePlayer.role.name === "Recluse" && Math.random() < 0.7) role = getRandomElement(evilRoles);
         if (randomAlivePlayer.role.name === "Spy") role = randomAlivePlayer.bluff;
         player.info = randomAlivePlayer.seat + " is " + role;
     }

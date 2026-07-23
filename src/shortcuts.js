@@ -59,7 +59,7 @@ function getsTrueInfo(player) {
 
 function isGood(player) {
     if (player.role.name === "Spy" && !isDrunk(player)) return true;
-    if (player.role.name === "Recluse" && !isDrunk(player)) return false;
+    if (player.role.name === "Recluse" && !isDrunk(player) && Math.random() < 0.7) return false;
     return player.isGood;
 }
 

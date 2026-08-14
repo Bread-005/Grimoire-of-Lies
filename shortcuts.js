@@ -2,7 +2,7 @@ import {players} from "./roleSelection.js";
 import {isDrunk} from "./src/shortcuts.js";
 
 let popupZIndex = 1000;
-const API_URL = "https://clocktower-homebrew-collection-13pz.onrender.com";
+const API_URL = "https://hobby-projects-api.onrender.com";
 
 async function endGame(text = "", winningTeam = "") {
     if (storage.night === 0) return;

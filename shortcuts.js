@@ -15,7 +15,7 @@ async function endGame(text = "", winningTeam = "") {
     for (const player of players) {
         if (player.role.name !== player.bluff) {
             document.getElementById("player-role-image" + player.seat).src =
-                "https://wiki.bloodontheclocktower.com/Special:FilePath/icon_" + player.role.name.toLowerCase().replaceAll(" ", "") + ".png";
+                "https://raw.githubusercontent.com/Bread-005/Clocktower-Homebrew-Collection/main/icons/Icon_" + player.role.name.toLowerCase().replaceAll(" ", "") + ".png";
         }
     }
 

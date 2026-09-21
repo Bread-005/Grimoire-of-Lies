@@ -111,12 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function setupUserName() {
         document.getElementById("username-div").textContent = "Name: " + loginStorage.name;
-        document.getElementById("logout-button").addEventListener("click", async () => {
-            await fetch(API_URL + "/session/delete", {
-                method: "POST",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({token: loginStorage.token})
-            });
+        document.getElementById("logout-button").addEventListener("click", () => {
             window.location = "https://bread-005.github.io/login-page/index.html";
         });
     }

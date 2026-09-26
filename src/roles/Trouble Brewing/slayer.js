@@ -19,7 +19,12 @@ async function slayerShoot(seat1, seat2) {
         createPopup(target.name + " does not exist!", {backgroundColor: "red", duration: 5000});
         return;
     }
+    if (shooter.slayerHasShot) {
+        createPopup(shooter.name + " has already used their Slayer shot!", {backgroundColor: "red", duration: 5000});
+        return;
+    }
 
+    shooter.slayerHasShot = true;
     document.getElementById("player-info" + shooter.seat).style.visibility = "visible";
     if (shooter.role.name === "Slayer" && !isDrunk(shooter)) {
         if (target.role.characterType === "Demon" || target.role.name === "Recluse" && !isDrunk(target) && Math.random() < 0.3) {

@@ -1,59 +1,73 @@
 [
   {
     "name": "Steward",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing 1 good player."
   },
   {
     "name": "Empath",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "Each night, you learn how many of your 2 alive neighbours are evil."
   },
   {
     "name": "Chef",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing how many pairs of evil players there are."
   },
   {
     "name": "Imp",
-    "characterType": "Demon"
+    "characterType": "Demon",
+    "ability": "Each night*, choose a player: they die. If you kill yourself this way, a Minion becomes the Imp."
   },
   {
     "name": "Washerwoman",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Townsfolk."
   },
   {
     "name": "Investigator",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Minion."
   },
   {
     "name": "Scarlet Woman",
-    "characterType": "Minion"
+    "characterType": "Minion",
+    "ability": "If there are 5 or more players alive & the Demon dies, you become the Demon."
   },
   {
     "name": "Drunk",
-    "characterType": "Outsider"
+    "characterType": "Outsider",
+    "ability": "You do not know you are the Drunk. You think you are a Townsfolk character, but you are not."
   },
   {
     "name": "Librarian",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing that 1 of 2 players is a particular Outsider. (Or that zero exist.)"
   },
   {
     "name": "Fortune Teller",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "Each night, choose 2 players: you learn if either is a Demon. There is a good player that registers as a Demon to you."
   },
   {
     "name": "Saint",
-    "characterType": "Outsider"
+    "characterType": "Outsider",
+    "ability": "If you die by execution, your team loses."
   },
   {
     "name": "Poisoner",
-    "characterType": "Minion"
+    "characterType": "Minion",
+    "ability": "Each night, choose a player: they are poisoned tonight and tomorrow day."
   },
   {
     "name": "Soldier",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You are safe from the Demon."
   },
   {
     "name": "Recluse",
     "characterType": "Outsider",
+    "ability": "You might register as evil & as a Minion or Demon, even if dead.",
     "extraInfo": "The Recluse might (mostly 70%) registers as evil, as a Minion & as a Demon to good abilities.",
     "explanations": [
       "There is a 30% cahnce, the Slayer kills the Recluse when shooting them.",
@@ -62,30 +76,37 @@
   },
   {
     "name": "Virgin",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "The 1st time you are nominated, if the nominator is a Townsfolk, they are executed immediately."
   },
   {
     "name": "Butler",
-    "characterType": "Outsider"
+    "characterType": "Outsider",
+    "ability": "Each night, choose a player (not yourself): tomorrow, only they may nominate."
   },
   {
     "name": "Baron",
-    "characterType": "Minion"
+    "characterType": "Minion",
+    "ability": "There are extra Outsiders in play. [+2 Outsiders]"
   },
   {
     "name": "Undertaker",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "Each night*, you learn which character died by execution today."
   },
   {
     "name": "Ravenkeeper",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "If you die at night, you are woken to choose a player: you learn their character."
   },
   {
     "name": "Knight",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "You start knowing 2 players that are not the Demon."
   },
   {
     "name": "Slayer",
-    "characterType": "Townsfolk"
+    "characterType": "Townsfolk",
+    "ability": "Once per game, during the day, publicly choose a player: if they are the Demon, they die."
   }
 ]
